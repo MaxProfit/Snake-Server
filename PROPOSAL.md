@@ -24,4 +24,5 @@ to us. I plan to expand this concept greatly
 5. I would also have to use the application core of OF for creating the application itself
 6. Along with the Gui for spawning up a server, playing single player, or joining a multiplayer game
 
-:vulcan_sulute:
+# Live Long and Prosper!
+# :vulcan_salute:
