@@ -55,6 +55,7 @@ json file for simple configuration.
 ### Deadlines (self imposed)
 
 1. November 9th
+    - [x] Get a server on a port then connect with another process
     - [ ] Get two computers to communicate together
     - [ ] Parse JSON and output the key:value pair to ensure that it works
     - [ ] Write unit tests testing the network, most likely testing localhost
