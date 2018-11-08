@@ -1,28 +1,37 @@
 # Project Proposal
-### Slither.io for of-snake
+### :snake: Slither.io for of-snake :snake:
 
-I have thought about this for a weekend and I think that turning the snake game into a multiplayer
-game that's like slitherio would be interesting. It would involve using the TCP networking and
-creating a server that would spawn the food and keep track of the players and it would also
-consist of player entities that would connect to the server on the specific port and play the
-game. This project would also entail using XML to configure the server specification and file path
-also for the configuration of the server. I am also interested in learning how to do threading so 
-maybe I could offload the work of the server onto another thread and choose to boot it from the
-game's main menu. Another library that I would have to use is the application core and gui.
-Maybe if i get all of that completed I could figure out how to run this controller off of arduino.
 
-:snake: Sliter.io just got some competition: snake.io. This game is designed to mimic the
-functionality of slither.io but in the form of the of-snake assignment that was just recently given
-to us. I plan to expand this concept greatly
+I wish to create a multiplayer version of the game snake that would behave similarly
+to the game slitherio. I would essentially create the game such that it would use
+a server and then each individual client would connect. It might involve threads
+for the use of creating a server thread for the others to connect to, but it may
+just be easier for port forwarding purposes just to offload that to somewhere
+where I can port forward anyway.
 
-1. Create a server and be able to play through the network through TCP.
-2. Create a map and expand the game beyond just the tiles we can see
-3. Optimize the event loop and maybe add threading to support the server.
-4. Create an XML file that can edit the configuration of the server
-- things such as: Food spawn rate, amount of snake increase per food, etc.
-- this data would then have to be sent in the initial packet back to the clients.
-5. I would also have to use the application core of OF for creating the application itself
-6. Along with the Gui for spawning up a server, playing single player, or joining a multiplayer game
+The libraries I plan to use are the libraries BOOST, ASIO, EASTL (for speed), 
+maybe different graphical engines that I find I like more that work better for
+native platforms better than I like how openframeworks works 
 
-# Live Long and Prosper!
-# :vulcan_salute:
+Here are my objectives:
+
+1. Add multiplayer with TCP connections
+    * Possibly using JSON to pass data between client and server
+    * JSON to conigure things on the server on startup
+        * Food Spawn rate
+        * Length increase for each food
+        * Size of map
+        * speed of snakes?
+    * Create a stand alone server to host the game on something like AWS
+2. Adjust the game mechanics for more of a sliterio feel
+3. Make the game go beyond the boundaries of the window
+4. Make a minimap that displays locations of the players
+5. Be able to name your snake and have that name be associated with scoreboard
+6. Add a nicer GUI with options for adding name, starting server
+7. Make the food line up with the boundaries (personal OCD)
+8. Make the snakes show orientation or eyes or something to distinguish them
+9. Create a seperate server executable that is configurable that can be run
+
+[Boost!](https://www.boost.org/)
+[Boost ASIO](https://think-async.com/)
+[EA STL (for speed!)](https://github.com/electronicarts/EASTL)
