@@ -1,19 +1,20 @@
 # Project Proposal
-### :snake: Slither.io for of-snake :snake:
+## :snake: Slither.io for of-snake :snake:
 
+### Proposal
 
-I wish to create a multiplayer version of the game snake that would behave similarly
-to the game slitherio. I would essentially create the game such that it would use
-a server and then each individual client would connect. It might involve threads
-for the use of creating a server thread for the others to connect to, but it may
-just be easier for port forwarding purposes just to offload that to somewhere
-where I can port forward anyway.
+My proposal is to create a multiplayer version of the game Snake that would
+behave much like the online game sliterio. I would create a game such that it
+would involve a client server relationship and would require optimizing the
+game loop and creating additional rules and graphics for the game to make it
+more user friendly and more like a production ready version of the game. This
+might also require using native GUI libraries to get the best looks for each
+operating system, making executables seperate for each system that have a nice
+GUI for playing either multiplayer or single player, changing the skin of the
+snake, etc. The server will also have a configurable portion consisting of a
+json file for simple configuration.
 
-The libraries I plan to use are the libraries BOOST, ASIO, EASTL (for speed), 
-maybe different graphical engines that I find I like more that work better for
-native platforms better than I like how openframeworks works 
-
-Here are my objectives:
+### Objectives
 
 1. Add multiplayer with TCP connections
     * Possibly using JSON to pass data between client and server
@@ -32,6 +33,45 @@ Here are my objectives:
 8. Make the snakes show orientation or eyes or something to distinguish them
 9. Create a seperate server executable that is configurable that can be run
 
-[Boost!](https://www.boost.org/)
-[Boost ASIO](https://think-async.com/)
-[EA STL (for speed!)](https://github.com/electronicarts/EASTL)
+### Libraries
+
+* [EA STL)](github.com/electronicarts/EASTL)
+* [Boost](www.boost.org/)
+* [ASIO](think-async.com/)
+* [OpenFrameworks](openframeworks.cc)
+
+### Resources
+
+* I will use whatever game design + networking things I can find on the internet
+* Youtube channel that I have been studying C++ off of called TheChernoProject
+
+### Things I Hope to Learn
+
+* Network programming
+* Speed & Optimization
+* How to use native GUIs
+* How to make a shippable game
+
+### Deadlines (self imposed)
+
+1. November 9th
+    - [ ] Get two computers to communicate together
+    - [ ] Parse JSON and output the key:value pair to ensure that it works
+    - [ ] Write unit tests testing the network, most likely testing localhost
+    - [ ] Write a data format for world data, storing snakes and food locations
+    - [ ] Write a data format for configuration, one for client, one for server
+    - [ ] Learn about syncronous vs asyncronous servers and their benefits
+    - [ ] Host the server code on an AWS instance
+2. November 16th
+    - [ ] Get two snakes in the same game together
+    - [ ] Make the snakes conform to the new rules of slitherio
+3. November 23rd
+    - [ ] Make the game go beyond the boundaries of the window
+    - [ ] Make a minimap for the game
+4. November 30th
+    - [ ] Clean up the graphics and make some new snake skins
+    - [ ] Have the leaderboard be able to store names associated with score
+    - [ ] Figure out how to unit test something as complex as this
+5. December 7th
+
+6. December 14th
