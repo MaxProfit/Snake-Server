@@ -43,7 +43,7 @@ json file for simple configuration.
 ### Resources
 
 * I will use whatever game design + networking things I can find on the internet
-* Youtube channel that I have been studying C++ off of called TheChernoProject
+* Youtube channel that I have been studying C++ off of called [TheChernoProject](https://www.youtube.com/user/TheChernoProject)
 
 ### Things I Hope to Learn
 
