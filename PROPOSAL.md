@@ -35,7 +35,7 @@ json file for simple configuration.
 
 ### Libraries
 
-* [EA STL)](github.com/electronicarts/EASTL)
+* [EA STL](github.com/electronicarts/EASTL)
 * [Boost](www.boost.org/)
 * [ASIO](think-async.com/)
 * [OpenFrameworks](openframeworks.cc)
