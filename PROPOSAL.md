@@ -1,5 +1,5 @@
 # Project Proposal
-## :snake: Slither.io for of-snake :snake:
+## :snake: Slither.io + Snake :snake:
 
 ### Proposal
 
