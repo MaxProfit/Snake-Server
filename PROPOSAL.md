@@ -4,7 +4,7 @@
 ### Proposal
 
 My proposal is to create a multiplayer version of the game Snake that would
-behave much like the online game [_sliter.io_](http://slither.io/). I would create a game such that it
+behave much like the online game [_slither.io_](http://slither.io/). I would create a game such that it
 would involve a client server relationship and would require optimizing the
 game loop and creating additional rules and graphics for the game to make it
 more user friendly and more like a production ready version of the game. This
