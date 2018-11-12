@@ -15,10 +15,10 @@
 #include <memory>
 #include <set>
 #include <utility>
-#include "asio.hpp"
+#include <boost/asio.hpp>
 #include "chat_message.hpp"
 
-using asio::ip::tcp;
+using boost::asio::ip::tcp;
 
 //----------------------------------------------------------------------
 
@@ -101,8 +101,8 @@ private:
   void do_read_header()
   {
     auto self(shared_from_this());
-    asio::async_read(socket_,
-        asio::buffer(read_msg_.data(), chat_message::header_length),
+    boost::asio::async_read(socket_,
+        boost::asio::buffer(read_msg_.data(), chat_message::header_length),
         [this, self](std::error_code ec, std::size_t /*length*/)
         {
           if (!ec && read_msg_.decode_header())
@@ -119,8 +119,8 @@ private:
   void do_read_body()
   {
     auto self(shared_from_this());
-    asio::async_read(socket_,
-        asio::buffer(read_msg_.body(), read_msg_.body_length()),
+    boost::asio::async_read(socket_,
+        boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
         [this, self](std::error_code ec, std::size_t /*length*/)
         {
           if (!ec)
@@ -138,8 +138,8 @@ private:
   void do_write()
   {
     auto self(shared_from_this());
-    asio::async_write(socket_,
-        asio::buffer(write_msgs_.front().data(),
+    boost::asio::async_write(socket_,
+        boost::asio::buffer(write_msgs_.front().data(),
           write_msgs_.front().length()),
         [this, self](std::error_code ec, std::size_t /*length*/)
         {
@@ -169,7 +169,7 @@ private:
 class chat_server
 {
 public:
-  chat_server(asio::io_context& io_context,
+  chat_server(boost::asio::io_context& io_context,
       const tcp::endpoint& endpoint)
     : acceptor_(io_context, endpoint)
   {
@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
       return 1;
     }
 
-    asio::io_context io_context;
+    boost::asio::io_context io_context;
 
     std::list<chat_server> servers;
     for (int i = 1; i < argc; ++i)
