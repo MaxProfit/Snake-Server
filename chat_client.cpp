@@ -65,7 +65,7 @@ private:
   }
 
   void do_write() {
-    boost::asio::async_write(socket_, boost::asio::buffer(&write_vecs_.front(), sizeof(write_vecs_.front()), [this](std::error_code ec, std::size_t /*length*/) {
+    boost::asio::async_write(socket_, boost::asio::buffer(&write_vecs_.front(), sizeof(write_vecs_.front())), [this](std::error_code ec, std::size_t /*length*/) {
       if (!ec) {
         write_vecs_.pop_front();
         if (!write_vecs_.empty()) {
