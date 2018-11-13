@@ -16,20 +16,21 @@
 #include <set>
 #include <utility>
 #include <boost/asio.hpp>
-#include "chat_message.hpp"
+#include "json.hpp"
 
 using boost::asio::ip::tcp;
 
 //----------------------------------------------------------------------
 
-typedef std::deque<chat_message> chat_message_queue;
+typedef std::deque<cbor_vec> cbor_vec_queue;
+typedef std::vector<uint8_t> cbor_vec;
 
 //----------------------------------------------------------------------
 
 class chat_participant {
 public:
   virtual ~chat_participant() {}
-  virtual void deliver(const chat_message& msg) = 0;
+  virtual void deliver(const cbor_vec& vec) = 0;
 };
 
 // Keeps track of the participants on the server
@@ -47,9 +48,9 @@ public:
     participants_.erase(participant);
   }
 
-  void deliver(const chat_message& msg) {
+  void deliver(const cbor_vec& vec) {
     for (auto participant: participants_) {
-      participant->deliver(msg);
+      participant->deliver(vec);
     }
   }
 
@@ -66,47 +67,65 @@ public:
   void start() {
     // I should probably have the quick communication here
     room_.join(shared_from_this());
-    do_read_header();
+    // do_read_header();
+    do_read_json();
   }
 
-  void deliver(const chat_message& msg) {
-    bool write_in_progress = !write_msgs_.empty();
-    write_msgs_.push_back(msg);
+  void deliver(const cbor_vec& vec) {
+    bool write_in_progress = !write_vecs_.empty();
+    write_vecs_.push_back(vec);
     if (!write_in_progress) {
       do_write();
     }
   }
 
 private:
-  void do_read_header() {
+
+  void do_read_json() {
     auto self(shared_from_this());
-    boost::asio::async_read(socket_, boost::asio::buffer(read_msg_.data(), chat_message::header_length), [this, self](std::error_code ec, std::size_t /*length*/) {
-      if (!ec && read_msg_.decode_header()) {
-        do_read_body();
+    std::vector<uint8_t> json_reads;
+    boost::asio::async_read(socket_, boost::asio::buffer(&json_reads, sizeof(json_reads)), [this, self](std::error_code ec, std::size_t /*length*/) {
+      if (!ec) {
+        room_.deliver(read_vec_);
+        json j_from_cbor = json::from_cbor(json_reads);
+        std::cout << j_from_cbor["pi"] << std::endl;
+        // do read header? 
+        // do something with the jsonreads
       } else {
         room_.leave(shared_from_this());
       }
     });
   }
 
-  void do_read_body() {
-    auto self(shared_from_this());
-    boost::asio::async_read(socket_, boost::asio::buffer(read_msg_.body(), read_msg_.body_length()), [this, self](std::error_code ec, std::size_t /*length*/) {
-      if (!ec) {
-        room_.deliver(read_msg_);
-        do_read_header();
-      } else {
-        room_.leave(shared_from_this());
-      }
-    });
-  }
+  // void do_read_header() {
+  //   auto self(shared_from_this());
+  //   boost::asio::async_read(socket_, boost::asio::buffer(read_msg_.data(), chat_message::header_length), [this, self](std::error_code ec, std::size_t /*length*/) {
+  //     if (!ec && read_msg_.decode_header()) {
+  //       do_read_body();
+  //     } else {
+  //       room_.leave(shared_from_this());
+  //     }
+  //   });
+  // }
+
+  // void do_read_body() {
+  //   auto self(shared_from_this());
+  //   boost::asio::async_read(socket_, boost::asio::buffer(read_msg_.body(), read_msg_.body_length()), [this, self](std::error_code ec, std::size_t /*length*/) {
+  //     if (!ec) {
+  //       room_.deliver(read_msg_);
+  //       do_read_header();
+  //     } else {
+  //       room_.leave(shared_from_this());
+  //     }
+  //   });
+  // }
 
   void do_write() {
     auto self(shared_from_this());
-    boost::asio::async_write(socket_, boost::asio::buffer(write_msgs_.front().data(), write_msgs_.front().length()), [this, self](std::error_code ec, std::size_t /*length*/) {
+    boost::asio::async_write(socket_, boost::asio::buffer(&write_vecs_.front(), sizeof(write_vecs_.front()), [this, self](std::error_code ec, std::size_t /*length*/) {
       if (!ec) {
-        write_msgs_.pop_front();
-        if (!write_msgs_.empty()) {
+        write_vecs_.pop_front();
+        if (!write_vecs_.empty()) {
           do_write();
         }
       } else {
@@ -117,8 +136,9 @@ private:
 
   tcp::socket socket_;
   chat_room& room_;
-  chat_message read_msg_;
-  chat_message_queue write_msgs_;
+  cbor_vec read_vec_;
+  cbor_vec_queue write_vecs_;
+
 };
 
 //----------------------------------------------------------------------

@@ -13,6 +13,8 @@
 #include <iostream>
 #include <thread>
 #include <boost/asio.hpp>
+#include <vector>
+#include "json.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -101,6 +103,11 @@ int main() {
     //   client.write(msg);
     // }
 
+    json j;
+	  j["pi"] = 3.1415;
+	  j["list"] = {1,2,3};
+	  std::vector<std::uint8_t> v_cbor = json::to_cbor(j);
+    client.write(v_cbor);
 
     client.close();
     thread.join();
