@@ -88,6 +88,7 @@ private:
     boost::asio::async_read(socket_, boost::asio::buffer(&json_reads, sizeof(json_reads)), [this, self, json_reads](std::error_code ec, std::size_t /*length*/) {
       if (!ec) {
         room_.deliver(read_vec_);
+        std::cout << "We got here!!" << std::endl;
         json j_from_cbor = json::from_cbor(json_reads);
         std::cout << j_from_cbor["pi"] << std::endl;
         // do read header? 
