@@ -36,7 +36,8 @@ public:
   }
 
   void close() {
-    boost::asio::post(io_context_, [this]() { socket_.close(); });
+    boost::asio::post(io_context_, [this]() { 
+      socket_.close(); });
   }
 
 private:
@@ -92,18 +93,15 @@ private:
 
 int main(int argc, char* argv[]) {
   try {
-    if (argc != 3) {
-      std::cerr << "Usage: chat_client <host> <port>\n";
-      return 1;
-    }
-
     boost::asio::io_context io_context;
 
+    const std::string kPORT ("49145");
+    const std::string kADDRESS ("54.237.158.244");
     tcp::resolver resolver(io_context);
-    auto endpoints = resolver.resolve(argv[1], argv[2]);
-    chat_client c(io_context, endpoints);
+    auto endpoints = resolver.resolve(kADDRESS.c_str(), kPORT.c_str());
+    chat_client client(io_context, endpoints);
 
-    std::thread t([&io_context](){ io_context.run(); });
+    std::thread thread([&io_context](){ io_context.run(); });
 
     char line[chat_message::max_body_length + 1];
     while (std::cin.getline(line, chat_message::max_body_length + 1)) {
@@ -111,11 +109,12 @@ int main(int argc, char* argv[]) {
       msg.body_length(std::strlen(line));
       std::memcpy(msg.body(), line, msg.body_length());
       msg.encode_header();
-      c.write(msg);
+      client.write(msg);
     }
 
-    c.close();
-    t.join();
+    client.close();
+    thread.join();
+    
   } catch (std::exception& e) {
     std::cerr << "Exception: " << e.what() << "\n";
   }
