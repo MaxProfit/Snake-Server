@@ -13,11 +13,11 @@
 #include <iostream>
 #include <thread>
 #include <boost/asio.hpp>
-#include "chat_message.hpp"
 
 using boost::asio::ip::tcp;
 
-typedef std::deque<chat_message> chat_message_queue;
+typedef std::deque<cbor_vec> cbor_vec_queue;
+typedef std::vector<uint8_t> cbor_vec;
 
 class chat_client {
 public:
@@ -25,10 +25,10 @@ public:
     do_connect(endpoints);
   }
 
-  void write(const chat_message& msg) {
-    boost::asio::post(io_context_, [this, msg]() {
-      bool write_in_progress = !write_msgs_.empty();
-      write_msgs_.push_back(msg);
+  void write(const cbor_vec& vec) {
+    boost::asio::post(io_context_, [this, vec]() {
+      bool write_in_progress = !write_vecs_.empty();
+      write_vecs_.push_back(vec);
       if (!write_in_progress) {
         do_write();
       }
@@ -44,27 +44,16 @@ private:
   void do_connect(const tcp::resolver::results_type& endpoints) {
     boost::asio::async_connect(socket_, endpoints, [this](std::error_code ec, tcp::endpoint) {
       if (!ec) {
-        do_read_header();
+        do_read_json();
       }
     });
   }
 
-  void do_read_header() {
-    boost::asio::async_read(socket_, boost::asio::buffer(read_msg_.data(), chat_message::header_length), [this](std::error_code ec, std::size_t /*length*/) {
-      if (!ec && read_msg_.decode_header()) {
-        do_read_body();
-      } else {
-        socket_.close();
-      }
-    });
-  }
-
-  void do_read_body() {
-    boost::asio::async_read(socket_, boost::asio::buffer(read_msg_.body(), read_msg_.body_length()), [this](std::error_code ec, std::size_t /*length*/) {
+  void do_read_json() {
+    std::vector<uint8_t> json_reads;
+    boost::asio::async_read(socket_, boost::asio::buffer(&json_reads, sizeof(json_reads)), [this](std::error_code ec, std::size_t /*length*/) {
       if (!ec) {
-        std::cout.write(read_msg_.body(), read_msg_.body_length());
-        std::cout << "\n";
-        do_read_header();
+        // do something with the jsonreads
       } else {
         socket_.close();
       }
@@ -72,10 +61,10 @@ private:
   }
 
   void do_write() {
-    boost::asio::async_write(socket_, boost::asio::buffer(write_msgs_.front().data(), write_msgs_.front().length()), [this](std::error_code ec, std::size_t /*length*/) {
+    boost::asio::async_write(socket_, boost::asio::buffer(&write_vecs_.front(), sizeof(write_vec_.front()), [this](std::error_code ec, std::size_t /*length*/) {
       if (!ec) {
-        write_msgs_.pop_front();
-        if (!write_msgs_.empty()) {
+        write_vecs_.pop_front();
+        if (!write_vecs_.empty()) {
           do_write();
         }
       } else {
@@ -87,11 +76,11 @@ private:
 private:
   boost::asio::io_context& io_context_;
   tcp::socket socket_;
-  chat_message read_msg_;
-  chat_message_queue write_msgs_;
+  cbor_vec read_vec_;
+  cbor_vec_queue write_vecs_;
 };
 
-int main(int argc, char* argv[]) {
+int main() {
   try {
     boost::asio::io_context io_context;
 
@@ -103,18 +92,19 @@ int main(int argc, char* argv[]) {
 
     std::thread thread([&io_context](){ io_context.run(); });
 
-    char line[chat_message::max_body_length + 1];
-    while (std::cin.getline(line, chat_message::max_body_length + 1)) {
-      chat_message msg;
-      msg.body_length(std::strlen(line));
-      std::memcpy(msg.body(), line, msg.body_length());
-      msg.encode_header();
-      client.write(msg);
-    }
+    // char line[chat_message::max_body_length + 1];
+    // while (std::cin.getline(line, chat_message::max_body_length + 1)) {
+    //   chat_message msg;
+    //   msg.body_length(std::strlen(line));
+    //   std::memcpy(msg.body(), line, msg.body_length());
+    //   msg.encode_header();
+    //   client.write(msg);
+    // }
+
 
     client.close();
     thread.join();
-    
+
   } catch (std::exception& e) {
     std::cerr << "Exception: " << e.what() << "\n";
   }
