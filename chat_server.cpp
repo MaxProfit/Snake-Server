@@ -150,7 +150,7 @@ int main() {
   try {
     boost::asio::io_context io_context;
 
-    const short kPORT {49145};
+    const unsigned short kPORT {49145};
     tcp::endpoint endpoint(tcp::v4(), kPORT);
     chat_server server(io_context, endpoint);
 
