@@ -32,6 +32,7 @@ public:
   virtual void deliver(const chat_message& msg) = 0;
 };
 
+// Keeps track of the participants on the server
 typedef std::shared_ptr<chat_participant> chat_participant_ptr;
 
 //----------------------------------------------------------------------
@@ -40,9 +41,6 @@ class chat_room {
 public:
   void join(chat_participant_ptr participant) {
     participants_.insert(participant);
-    for (auto msg: recent_msgs_) {
-      participant->deliver(msg);
-    }
   }
 
   void leave(chat_participant_ptr participant) {
@@ -50,11 +48,6 @@ public:
   }
 
   void deliver(const chat_message& msg) {
-    recent_msgs_.push_back(msg);
-    while (recent_msgs_.size() > max_recent_msgs) {
-      recent_msgs_.pop_front();
-    }
-
     for (auto participant: participants_) {
       participant->deliver(msg);
     }
@@ -62,8 +55,6 @@ public:
 
 private:
   std::set<chat_participant_ptr> participants_;
-  enum { max_recent_msgs = 100 };
-  chat_message_queue recent_msgs_;
 };
 
 //----------------------------------------------------------------------
@@ -73,6 +64,7 @@ public:
   chat_session(tcp::socket socket, chat_room& room) : socket_(std::move(socket)), room_(room) {}
 
   void start() {
+    // I should probably have the quick communication here
     room_.join(shared_from_this());
     do_read_header();
   }
@@ -154,20 +146,13 @@ private:
 
 //----------------------------------------------------------------------
 
-int main(int argc, char* argv[]) {
+int main() {
   try {
-    if (argc < 2) {
-      std::cerr << "Usage: chat_server <port> [<port> ...]\n";
-      return 1;
-    }
-
     boost::asio::io_context io_context;
 
-    std::list<chat_server> servers;
-    for (int i = 1; i < argc; ++i) {
-      tcp::endpoint endpoint(tcp::v4(), std::atoi(argv[i]));
-      servers.emplace_back(io_context, endpoint);
-    }
+    const short kPORT {49145};
+    tcp::endpoint endpoint(tcp::v4(), kPORT);
+    chat_server server(io_context, endpoint);
 
     io_context.run();
 
