@@ -89,18 +89,18 @@ private:
   //   std::cout << "uhhh" << std::endl;
   //   boost::asio::async_read(socket_, boost::asio::buffer(json_reads), [this, self, json_reads](std::error_code ec, std::size_t /*length*/) {
   //     std::cout << "Hey im here" << std::endl;
-  //     if (!ec) {
-  //       std::cout << "no error here~" << std::endl;
-  //       room_.deliver(json_reads);
-  //       std::cout << "We got here!!" << std::endl;
-  //       json j_from_cbor = json::from_cbor(json_reads);
-  //       std::cout << j_from_cbor["pi"] << std::endl;
-  //       // do read header? 
-  //       // do something with the jsonreads
-  //     } else {
-  //       std::cout << "at the else statement" << std::endl;
-  //       room_.leave(shared_from_this());
-  //     }
+      // if (!ec) {
+      //   std::cout << "no error here~" << std::endl;
+      //   room_.deliver(json_reads);
+      //   std::cout << "We got here!!" << std::endl;
+      //   json j_from_cbor = json::from_cbor(json_reads);
+      //   std::cout << j_from_cbor["pi"] << std::endl;
+      //   // do read header? 
+      //   // do something with the jsonreads
+      // } else {
+      //   std::cout << "at the else statement" << std::endl;
+      //   room_.leave(shared_from_this());
+      // }
   //   });
   // }
 
@@ -109,9 +109,8 @@ private:
     std::cout << "trying to read!" << std::endl;
     std::vector<uint8_t> json_reads (50);
     std::cout << "uhhh" << std::endl;
-    boost::asio::read(socket_, boost::asio::buffer(json_reads), [this, self, json_reads](std::error_code ec, std::size_t /*length*/) {
-      std::cout << "Hey im here" << std::endl;
-      if (!ec) {
+    boost::asio::read(socket_, boost::asio::buffer(json_reads), std::error_code ec);
+    if (!ec) {
         std::cout << "no error here~" << std::endl;
         room_.deliver(json_reads);
         std::cout << "We got here!!" << std::endl;
@@ -123,7 +122,6 @@ private:
         std::cout << "at the else statement" << std::endl;
         room_.leave(shared_from_this());
       }
-    });
   }
 
   void do_write() {
