@@ -111,6 +111,7 @@ private:
     std::cout << "uhhh" << std::endl;
     boost::system::error_code ec;
     boost::asio::read(socket_, boost::asio::buffer(json_reads), ec);
+        json_reads.resize(22);
         std::cout << "no error here~" << std::endl;
         room_.deliver(json_reads);
         std::cout << "We got here!!" << std::endl;
