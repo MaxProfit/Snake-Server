@@ -113,7 +113,7 @@ private:
     boost::asio::read(socket_, boost::asio::buffer(json_reads), ec);
         json_reads.resize(22);
         std::cout << "no error here~" << std::endl;
-        room_.deliver(json_reads);
+        // room_.deliver(json_reads);
         std::cout << "We got here!!" << std::endl;
         json j_from_cbor = json::from_cbor(json_reads);
         std::cout << j_from_cbor["pi"] << std::endl;
