@@ -111,6 +111,10 @@ int main() {
 	  std::vector<std::uint8_t> v_cbor = json::to_cbor(j);
     client.write(v_cbor);
 
+    while(1!=0) {
+      
+    }
+
     client.close();
     thread.join();
 
