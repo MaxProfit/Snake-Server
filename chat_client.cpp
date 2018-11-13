@@ -18,8 +18,9 @@
 
 using boost::asio::ip::tcp;
 
-typedef std::deque<cbor_vec> cbor_vec_queue;
 typedef std::vector<uint8_t> cbor_vec;
+typedef std::deque<cbor_vec> cbor_vec_queue;
+
 
 class chat_client {
 public:
