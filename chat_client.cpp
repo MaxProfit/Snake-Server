@@ -17,6 +17,7 @@
 #include "json.hpp"
 
 using boost::asio::ip::tcp;
+using nlohmann::json;
 
 typedef std::vector<uint8_t> cbor_vec;
 typedef std::deque<cbor_vec> cbor_vec_queue;
