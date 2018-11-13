@@ -18,12 +18,13 @@
 #include <boost/asio.hpp>
 #include "json.hpp"
 
+using nlohmann::json;
 using boost::asio::ip::tcp;
 
 //----------------------------------------------------------------------
 
-typedef std::deque<cbor_vec> cbor_vec_queue;
 typedef std::vector<uint8_t> cbor_vec;
+typedef std::deque<cbor_vec> cbor_vec_queue;
 
 //----------------------------------------------------------------------
 
@@ -96,29 +97,6 @@ private:
       }
     });
   }
-
-  // void do_read_header() {
-  //   auto self(shared_from_this());
-  //   boost::asio::async_read(socket_, boost::asio::buffer(read_msg_.data(), chat_message::header_length), [this, self](std::error_code ec, std::size_t /*length*/) {
-  //     if (!ec && read_msg_.decode_header()) {
-  //       do_read_body();
-  //     } else {
-  //       room_.leave(shared_from_this());
-  //     }
-  //   });
-  // }
-
-  // void do_read_body() {
-  //   auto self(shared_from_this());
-  //   boost::asio::async_read(socket_, boost::asio::buffer(read_msg_.body(), read_msg_.body_length()), [this, self](std::error_code ec, std::size_t /*length*/) {
-  //     if (!ec) {
-  //       room_.deliver(read_msg_);
-  //       do_read_header();
-  //     } else {
-  //       room_.leave(shared_from_this());
-  //     }
-  //   });
-  // }
 
   void do_write() {
     auto self(shared_from_this());
