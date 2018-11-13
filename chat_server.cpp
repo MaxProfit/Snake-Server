@@ -85,7 +85,7 @@ private:
   void do_read_json() {
     auto self(shared_from_this());
     std::vector<uint8_t> json_reads;
-    boost::asio::async_read(socket_, boost::asio::buffer(&json_reads, sizeof(json_reads)), [this, self](std::error_code ec, std::size_t /*length*/) {
+    boost::asio::async_read(socket_, boost::asio::buffer(&json_reads, sizeof(json_reads)), [this, self, json_reads](std::error_code ec, std::size_t /*length*/) {
       if (!ec) {
         room_.deliver(read_vec_);
         json j_from_cbor = json::from_cbor(json_reads);
