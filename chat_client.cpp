@@ -55,9 +55,13 @@ private:
 
   void do_read_json() {
     std::vector<uint8_t> json_reads (50);
-    boost::asio::async_read(socket_, boost::asio::buffer(json_reads), [this](std::error_code ec, std::size_t /*length*/) {
+    boost::asio::async_read(socket_, boost::asio::buffer(json_reads,), [this, json_reads](std::error_code ec, std::size_t /*length*/) {
       if (!ec) {
         // do something with the jsonreads
+        std::cout << "no error here~" << std::endl;
+        std::cout << "We got here!!" << std::endl;
+        json j_from_cbor = json::from_cbor(json_reads);
+        std::cout << j_from_cbor["pi"] << std::endl;
       } else {
         socket_.close();
       }
