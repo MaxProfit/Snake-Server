@@ -84,8 +84,8 @@ private:
 
   void do_read_json() {
     auto self(shared_from_this());
-    std::vector<uint8_t> json_reads;
-    boost::asio::async_read(socket_, boost::asio::buffer(&json_reads, sizeof(json_reads)), [this, self, json_reads](std::error_code ec, std::size_t /*length*/) {
+    std::vector<uint8_t> json_reads (50);
+    boost::asio::async_read(socket_, boost::asio::buffer(json_reads), [this, self, json_reads](std::error_code ec, std::size_t /*length*/) {
       if (!ec) {
         room_.deliver(read_vec_);
         std::cout << "We got here!!" << std::endl;
@@ -101,7 +101,7 @@ private:
 
   void do_write() {
     auto self(shared_from_this());
-    boost::asio::async_write(socket_, boost::asio::buffer(&write_vecs_.front(), sizeof(write_vecs_.front())), [this, self](std::error_code ec, std::size_t /*length*/) {
+    boost::asio::async_write(socket_, boost::asio::buffer(write_vecs_.front()), [this, self](std::error_code ec, std::size_t /*length*/) {
       if (!ec) {
         write_vecs_.pop_front();
         if (!write_vecs_.empty()) {
