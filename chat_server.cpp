@@ -88,6 +88,7 @@ private:
     std::vector<uint8_t> json_reads (50);
     boost::asio::async_read(socket_, boost::asio::buffer(json_reads), [this, self, json_reads](std::error_code ec, std::size_t /*length*/) {
       if (!ec) {
+        std::cout << "no error here~" << std::endl;
         room_.deliver(json_reads);
         std::cout << "We got here!!" << std::endl;
         json j_from_cbor = json::from_cbor(json_reads);
@@ -95,6 +96,7 @@ private:
         // do read header? 
         // do something with the jsonreads
       } else {
+        std::cout << "at the else statement" << std::endl;
         room_.leave(shared_from_this());
       }
     });
