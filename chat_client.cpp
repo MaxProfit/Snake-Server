@@ -117,7 +117,7 @@ int main() {
 
     std::cout << v_cbor.size() << std::endl;
     for (auto x : v_cbor) {
-      std::cout  << x;
+      std::cout << x;
     }
 
     while (1!=2) {
