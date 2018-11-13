@@ -84,6 +84,7 @@ private:
 
   void do_read_json() {
     auto self(shared_from_this());
+    std::cout << "trying to read!" << std::endl;
     std::vector<uint8_t> json_reads (50);
     boost::asio::async_read(socket_, boost::asio::buffer(json_reads), [this, self, json_reads](std::error_code ec, std::size_t /*length*/) {
       if (!ec) {
@@ -148,6 +149,8 @@ private:
 int main() {
   try {
     boost::asio::io_context io_context;
+
+    std::cout << "at main" << std::endl;
 
     const unsigned short kPORT {49145};
     tcp::endpoint endpoint(tcp::v4(), kPORT);
