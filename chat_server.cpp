@@ -93,9 +93,9 @@ private:
       if (!ec) {
         std::cout << "Okay lets try something." << std::endl;
 
-        const std::vector<uint8_t> *v = boost::asio::buffer_cast<const std::vector<uint8_t>*>(std::ref(buf));
+        const std::vector<uint8_t> *v = boost::asio::buffer_cast<const std::vector<uint8_t>*>(std::ref(recv_buff));
         std::vector<uint8_t> vec;
-        memcpy(&vec, v, boost::asio::buffer_size(buf));
+        memcpy(&vec, v, boost::asio::buffer_size(recv_buff));
 
         
         vec.shrink_to_fit();
