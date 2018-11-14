@@ -87,7 +87,8 @@ private:
     std::cout << "trying to read!" << std::endl;
     std::vector<uint8_t> json_reads (50);
     std::cout << "uhhh" << std::endl;
-    boost::asio::read(socket_, boost::asio::buffer(json_reads), boost::system::error_code ec);
+    boost::system::error_code ec;
+    boost::asio::read(socket_, boost::asio::buffer(json_reads), ec);
     if (!ec) {
        json_reads.resize(22);
         std::cout << "no error here~" << std::endl;
