@@ -15,6 +15,7 @@
 #include <boost/asio.hpp>
 #include "chat_message.hpp"
 #include <fstream>
+#include <cstdlib>
 
 using boost::asio::ip::tcp;
 
@@ -146,15 +147,8 @@ int main(int argc, char* argv[])
 
     std::thread t([&io_context](){ io_context.run(); });
 
-    // char line[chat_message::max_body_length + 1];
-    // while (std::cin.getline(line, chat_message::max_body_length + 1))
-    // {
-    //   chat_message msg;
-    //   msg.body_length(std::strlen(line));
-    //   std::memcpy(msg.body(), line, msg.body_length());
-    //   msg.encode_header();
-    //   c.write(msg);
-    // }
+    
+    
 
     std::ifstream i("init_client_to_server.json");
     std::string str;
@@ -177,7 +171,10 @@ int main(int argc, char* argv[])
     std::memcpy(msg.body(), line, msg.body_length());
     msg.encode_header();
     c.write(msg);
-    std::cout << msg.body() << std::endl;
+
+    
+
+    sleep(5);
 
 
     c.close();
