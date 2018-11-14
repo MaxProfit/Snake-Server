@@ -88,12 +88,12 @@ private:
     std::cout << "trying to read!" << std::endl;
     boost::asio::mutable_buffer buf;
     std::cout << "uhhh" << std::endl;
-    boost::asio::async_read(socket_, buf, [this, self, std::ref(buf)](std::error_code ec, std::size_t /*length*/) {
+    boost::asio::async_read(socket_, buf, [this, self, buf](std::error_code ec, std::size_t /*length*/) {
       std::cout << "Hey im here" << std::endl;
       if (!ec) {
         std::cout << "Okay lets try something." << std::endl;
 
-        const std::vector<uint8_t> *v = boost::asio::buffer_cast<const std::vector<uint8_t>*>(buf);
+        const std::vector<uint8_t> *v = boost::asio::buffer_cast<const std::vector<uint8_t>*>(std::ref(buf));
         std::vector<uint8_t> vec;
         memcpy(&vec, v, boost::asio::buffer_size(buf));
 
