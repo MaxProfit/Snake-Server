@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
     char line[chat_message::max_body_length + 1];
 
     // Code below from https://stackoverflow.com/questions/13294067/how-to-convert-string-to-char-array-in-c
-    strncpy(tab2, file_contents.c_str(), sizeof(line));
+    strncpy(line, file_contents.c_str(), sizeof(line));
     line[sizeof(line) - 1] = 0;
 
     chat_message msg;
