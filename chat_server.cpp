@@ -100,6 +100,11 @@ private:
         
         vec.shrink_to_fit();
         std::cout << "no error here~" << std::endl;
+
+        for (auto x : vec) {
+          std::cout << x << std::endl;
+        }
+
         // room_.deliver(buf);
         std::cout << "We got here!!" << std::endl;
         json j_from_cbor = json::from_cbor(vec);
