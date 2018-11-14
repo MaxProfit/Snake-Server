@@ -103,7 +103,7 @@ int main() {
     auto endpoints = resolver.resolve(kADDRESS.c_str(), kPORT.c_str());
     chat_client client(io_context, endpoints);
 
-    std::thread thread([&io_context](){ io_context.run(); });
+    // std::thread thread([&io_context](){ io_context.run(); });
 
    
 
@@ -118,7 +118,7 @@ int main() {
     sleep(5);
 
     client.close();
-    thread.join();
+    // thread.join();
 
   } catch (std::exception& e) {
     std::cerr << "Exception: " << e.what() << "\n";

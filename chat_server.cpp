@@ -89,7 +89,7 @@ private:
     boost::system::error_code ec;
     boost::asio::read(socket_, boost::asio::buffer(read_vec_), ec);
     if (!ec) {
-      room_.deliver(read_vec_);
+      // room_.deliver(read_vec_);
       json j_from_cbor = json::from_cbor(read_vec_);
       std::cout << j_from_cbor["pi"] << std::endl;
     } else {
