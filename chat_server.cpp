@@ -85,7 +85,7 @@ private:
   void do_read_json() {
     auto self(shared_from_this());
     std::cout << "trying to read!" << std::endl;
-    std::vector<uint8_t> json_reads;
+    std::vector<uint8_t> json_reads(22);
     std::cout << "uhhh" << std::endl;
     boost::asio::async_read(socket_, boost::asio::buffer(json_reads), [this, self, json_reads](std::error_code ec, std::size_t /*length*/) {
       std::cout << "Hey im here" << std::endl;
