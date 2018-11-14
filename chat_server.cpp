@@ -93,7 +93,7 @@ private:
       if (!ec) {
         std::cout << "Okay lets try something." << std::endl;
 
-        const std::vector<uint8_t> *v = boost::asio::buffer_cast<const vector<uint8_t>*>(buf);
+        const std::vector<uint8_t> *v = boost::asio::buffer_cast<const std::vector<uint8_t>*>(buf);
         std::vector<uint8_t> vec;
         memcpy(&vec, v, boost::asio::buffer_size(buf));
 
