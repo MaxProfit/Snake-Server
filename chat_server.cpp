@@ -68,15 +68,14 @@ public:
   void start() {
     // I should probably have the quick communication here
     room_.join(shared_from_this());
-    // do_read_header();
-    do_read_json();
+    do_read_vector();
   }
 
   void deliver(const cbor_vec& vec) {
     bool write_in_progress = !write_vecs_.empty();
     write_vecs_.push_back(vec);
     if (!write_in_progress) {
-      do_write();
+      do_write_vector();
     }
   }
 
