@@ -166,8 +166,10 @@ int main()
     // c.write(msg);
 
     while(true) {
-      boost::asio::steady_timer timer(io, boost::asio::chrono::seconds(5));
-      timer.async_wait([msg](){
+
+
+      boost::asio::steady_timer timer(io_context, boost::asio::chrono::seconds(5));
+      timer.async_wait([&c, &msg](boost::system::error_code /*ec*/){
         c.write(msg);
       });
     }
