@@ -211,7 +211,7 @@ int main()
     boost::asio::io_context io_context;
 
     const uint16_t kPORT {49145};
-    tcp::endpoint endpoint(tcp::v4(), kPORT)
+    tcp::endpoint endpoint(tcp::v4(), kPORT);
     chat_server server(io_context, endpoint);
 
     io_context.run();
