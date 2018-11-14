@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
     std::thread t([&io_context](){ io_context.run(); });
 
     char line[chat_message::max_body_length + 1];
-    std::ifstream("init_client_to_server.json");
+    std::ifstream i("init_client_to_server.json");
     while (i.getline(line, chat_message::max_body_length + 1))
     {
       chat_message msg;
