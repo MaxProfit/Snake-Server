@@ -85,18 +85,23 @@ private:
   void do_read_json() {
     auto self(shared_from_this());
     std::cout << "trying to read!" << std::endl;
-    std::vector<uint8_t> json_reads;
+    boost::asio::const_buffer buf;
     std::cout << "uhhh" << std::endl;
-    boost::asio::async_read(socket_, boost::asio::buffer(&json_reads), [this, self, json_reads](std::error_code ec, std::size_t /*length*/) {
+    boost::asio::async_read(socket_, buf, [this, self, buf](std::error_code ec, std::size_t /*length*/) {
       std::cout << "Hey im here" << std::endl;
       if (!ec) {
-        std::vector<uint8_t> readable(json_reads);
-        std::cout << json_reads[1] << std::endl;
-        readable.shrink_to_fit();
+        std::cout << "Okay lets try something." << std::endl;
+
+        const vector<uint8_t> *v = boost::asio::buffer_cast<const vector<uint8_t>*>(buf);
+        vector<uint8_t> vec;
+        memcpy(&vec, v, boost::asio::buffer_size(buf));
+
+        
+        vec.shrink_to_fit();
         std::cout << "no error here~" << std::endl;
-        room_.deliver(json_reads);
+        // room_.deliver(buf);
         std::cout << "We got here!!" << std::endl;
-        json j_from_cbor = json::from_cbor(readable);
+        json j_from_cbor = json::from_cbor(vec);
         std::cout << j_from_cbor["pi"] << std::endl;
         // do read header? 
         // do something with the jsonreads
