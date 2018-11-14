@@ -87,11 +87,10 @@ private:
     std::cout << "Beginning do_read_vector!" << std::endl;
     auto self(shared_from_this());
     boost::system::error_code ec;
-    cbor_vec charlie(50);
-    boost::asio::read(socket_, boost::asio::buffer(charlie), ec);
+    boost::asio::read(socket_, boost::asio::buffer(this->read_vec_), ec);
     if (!ec) {
       // room_.deliver(read_vec_);
-      json j_from_cbor = json::from_cbor(charlie);
+      json j_from_cbor = json::from_cbor(read_vec_);
       std::cout << j_from_cbor["pi"] << std::endl;
     } else {
       room_.leave(shared_from_this());

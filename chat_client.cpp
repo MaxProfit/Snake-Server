@@ -104,7 +104,7 @@ int main() {
     chat_client client(io_context, endpoints);
 
     // std::thread thread([&io_context](){ io_context.run(); });
-
+    sleep(5);
    
 
     json j;
