@@ -87,8 +87,7 @@ private:
     std::cout << "trying to read!" << std::endl;
     std::vector<uint8_t> json_reads (50);
     std::cout << "uhhh" << std::endl;
-    boost::system::error_code ec;
-    boost::asio::read(socket_, boost::asio::buffer(json_reads), ec);
+    boost::asio::read(socket_, boost::asio::buffer(json_reads), boost::system::error_code ec);
     if (!ec) {
        json_reads.resize(22);
         std::cout << "no error here~" << std::endl;
@@ -103,10 +102,6 @@ private:
       std::cout << "at the else statement" << std::endl;
       room_.leave(shared_from_this());
     }
-       
-
-
-        
   }
 
   void do_write() {
