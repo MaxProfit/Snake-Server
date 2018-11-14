@@ -167,7 +167,9 @@ int main()
 
     while(true) {
       boost::asio::steady_timer timer(io, boost::asio::chrono::seconds(5));
-      timer.async_wait(c.write(msg));
+      timer.async_wait([msg](){
+        c.write(msg);
+      });
     }
 
     c.close();
