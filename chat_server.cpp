@@ -91,10 +91,11 @@ private:
       std::cout << "Hey im here" << std::endl;
       if (!ec) {
         json_reads.shrink_to_fit();
+        std::vector<uint8_t> readable(json_reads);
         std::cout << "no error here~" << std::endl;
         room_.deliver(json_reads);
         std::cout << "We got here!!" << std::endl;
-        json j_from_cbor = json::from_cbor(json_reads);
+        json j_from_cbor = json::from_cbor(readable);
         std::cout << j_from_cbor["pi"] << std::endl;
         // do read header? 
         // do something with the jsonreads
