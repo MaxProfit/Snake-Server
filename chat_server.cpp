@@ -128,6 +128,8 @@ private:
           {
             std::ofstream o("pretty.json");
             o.write(read_msg_.body(), read_msg_.body_length());
+            std::cout.write(read_msg_.body(), read_msg_.body_length());
+            std::cout << std::endl;
             room_.deliver(read_msg_);
             do_read_header();
           }
