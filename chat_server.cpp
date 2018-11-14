@@ -68,10 +68,12 @@ public:
   void start() {
     // I should probably have the quick communication here
     room_.join(shared_from_this());
+    std::cout << "in start, trying to do do_read_vector!" << std::endl;
     do_read_vector();
   }
 
   void deliver(const cbor_vec& vec) {
+    std::cout << "trying to deliver!" << std::endl;
     bool write_in_progress = !write_vecs_.empty();
     write_vecs_.push_back(vec);
     if (!write_in_progress) {
@@ -82,6 +84,7 @@ public:
 private:
 
   void do_read_vector() {
+    std::cout << "Beginning do_read_vector!" << std::endl;
     auto self(shared_from_this());
     boost::system::error_code ec;
     boost::asio::read(socket_, boost::asio::buffer(read_vec_), ec);
@@ -95,6 +98,7 @@ private:
   }
 
   void do_write_vector() {
+    std::cout << "beginning do_write_vector!" << std::endl;
     auto self(shared_from_this());
     boost::system::error_code ec;
     boost::asio::write(socket_, boost::asio::buffer(write_vecs_.front()), ec);
@@ -120,13 +124,16 @@ private:
 class chat_server {
 public:
   chat_server(boost::asio::io_context& io_context, const tcp::endpoint& endpoint) : acceptor_(io_context, endpoint) {
+    std::cout << "server instantiated... moving to do accept!" << std::endl;
     do_accept();
   }
 
 private:
   void do_accept() {
+    std::cout << "trying to accept connection!" << std::endl;
     acceptor_.async_accept([this](std::error_code ec, tcp::socket socket) {
       if (!ec) {
+        std::cout << "moving the chat!" << std::endl;
         std::make_shared<chat_session>(std::move(socket), room_)->start();
       }
 

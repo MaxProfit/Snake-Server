@@ -48,10 +48,12 @@ public:
 
 private:
   void do_connect(const tcp::resolver::results_type& endpoints) {
+    std::cout << "trying to connect!!" << std::endl;
     boost::asio::async_connect(socket_, endpoints, [this](std::error_code ec, tcp::endpoint) {
       if (!ec) {
         // On connection to server, what it does
-        do_read_vector();
+        std::cout << "I'm in do_connect!" << std::endl;
+        // do_read_vector();
       }
     });
   }
@@ -59,6 +61,7 @@ private:
   void do_read_vector() {
     // Simply reads into the buffer
     boost::system::error_code ec;
+    std::cout << "I'm starting to read a vector!" << std::endl;
     boost::asio::read(socket_, boost::asio::buffer(read_vec_), ec);
     if (!ec) {
       std::cout << read_vec_.at(0) << std::endl;
