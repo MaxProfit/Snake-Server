@@ -87,7 +87,7 @@ private:
     auto self(shared_from_this());
     std::cout << "trying to read!" << std::endl;
     std::cout << "uhhh" << std::endl;
-    boost::asio::async_read(socket_, boost::asio::buffer(read_vec_), [this, self](std::error_code ec, std::size_t /*length*/) {
+    boost::asio::async_read(socket_, boost::asio::buffer(read_vec_.data()), [this, self](std::error_code ec, std::size_t /*length*/) {
       std::cout << "Hey im here" << std::endl;
       if (!ec) {
         std::cout << "Okay lets try something." << std::endl;
