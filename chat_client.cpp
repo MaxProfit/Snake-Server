@@ -129,25 +129,19 @@ private:
   chat_message_queue write_msgs_;
 };
 
-int main(int argc, char* argv[])
+int main()
 {
   try
   {
-    if (argc != 3)
-    {
-      std::cerr << "Usage: chat_client <host> <port>\n";
-      return 1;
-    }
-
     boost::asio::io_context io_context;
 
+    const std::string kADDRESS("54.237.158.244");
+    const std::string kPORT("49145");
     tcp::resolver resolver(io_context);
-    auto endpoints = resolver.resolve(argv[1], argv[2]);
+    auto endpoints = resolver.resolve(kADDRESS.c_str(), kPORT.c_str());
     chat_client c(io_context, endpoints);
 
     std::thread t([&io_context](){ io_context.run(); });
-
-    
     
 
     std::ifstream i("init_client_to_server.json");
@@ -159,7 +153,6 @@ int main(int argc, char* argv[])
       file_contents.push_back('\n');
     }
 
-
     char line[chat_message::max_body_length + 1];
 
     // Code below from https://stackoverflow.com/questions/13294067/how-to-convert-string-to-char-array-in-c
@@ -170,12 +163,12 @@ int main(int argc, char* argv[])
     msg.body_length(std::strlen(line));
     std::memcpy(msg.body(), line, msg.body_length());
     msg.encode_header();
-    c.write(msg);
+    // c.write(msg);
 
-    
-
-    sleep(5);
-
+    while(true) {
+      boost::asio::steady_timer timer(io, boost::asio::chrono::seconds(5));
+      timer.async_wait(c.write(msg));
+    }
 
     c.close();
     t.join();

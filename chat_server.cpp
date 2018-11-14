@@ -203,24 +203,16 @@ private:
 
 //----------------------------------------------------------------------
 
-int main(int argc, char* argv[])
+int main()
 {
   try
-  {
-    if (argc < 2)
-    {
-      std::cerr << "Usage: chat_server <port> [<port> ...]\n";
-      return 1;
-    }
+  
 
     boost::asio::io_context io_context;
 
-    std::list<chat_server> servers;
-    for (int i = 1; i < argc; ++i)
-    {
-      tcp::endpoint endpoint(tcp::v4(), std::atoi(argv[i]));
-      servers.emplace_back(io_context, endpoint);
-    }
+    const uint16_t kPORT {49145};
+    tcp::endpoint endpoint(tcp::v4(), kPORT)
+    chat_server server(io_context, endpoint);
 
     io_context.run();
   }
