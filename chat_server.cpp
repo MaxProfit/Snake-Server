@@ -126,6 +126,7 @@ private:
         {
           if (!ec)
           {
+            std::cout << "I received something!!" << std::endl;
             std::ofstream o("pretty.json");
             o.write(read_msg_.body(), read_msg_.body_length());
             std::cout.write(read_msg_.body(), read_msg_.body_length());

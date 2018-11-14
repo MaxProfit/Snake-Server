@@ -177,6 +177,7 @@ int main(int argc, char* argv[])
     std::memcpy(msg.body(), line, msg.body_length());
     msg.encode_header();
     c.write(msg);
+    std::cout << msg.body() << std::endl;
 
 
     c.close();
