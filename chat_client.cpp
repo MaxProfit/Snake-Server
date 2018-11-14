@@ -146,17 +146,32 @@ int main(int argc, char* argv[])
 
     std::thread t([&io_context](){ io_context.run(); });
 
-    char line[chat_message::max_body_length + 1];
+    // char line[chat_message::max_body_length + 1];
+    // while (std::cin.getline(line, chat_message::max_body_length + 1))
+    // {
+    //   chat_message msg;
+    //   msg.body_length(std::strlen(line));
+    //   std::memcpy(msg.body(), line, msg.body_length());
+    //   msg.encode_header();
+    //   c.write(msg);
+    // }
+
     std::ifstream i("init_client_to_server.json");
-    while (i.getline(line, chat_message::max_body_length + 1))
+    std::string str;
+    std::string file_contents;
+    while (std::getline(i, str))
     {
-      chat_message msg;
-      msg.body_length(std::strlen(line));
-      std::memcpy(msg.body(), line, msg.body_length());
-      msg.encode_header();
-      c.write(msg);
+      file_contents += str;
+      file_contents.push_back('\n');
     }
 
+    char line[chat_message::max_body_length + 1];
+    line = file_contents.c_str();
+    chat_message msg;
+    msg.body_length(std::strlen(file_contents));
+    std::memcpy(msg.body(), line, msg.body_length());
+    msg.encode_header();
+    c.write(msg);
 
 
     c.close();
