@@ -99,7 +99,8 @@ private:
         // memcpy(&vec, v, boost::asio::buffer_size(recv_buff));
 
         
-        return_vec.shrink_to_fit();
+        std::vector<uint8_t> mutabl(return_vec);
+        mutabl.shrink_to_fit();
         std::cout << "no error here~" << std::endl;
 
         for (auto x : return_vec) {
