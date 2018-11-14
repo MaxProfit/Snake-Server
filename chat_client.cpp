@@ -1,39 +1,6 @@
-//
-// chat_client.cpp
-// ~~~~~~~~~~~~~~~
-//
-// Copyright (c) 2003-2018 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
-
-#include <cstdlib>
-#include <deque>
-#include <iostream>
-#include <thread>
-#include <boost/asio.hpp>
-#include "chat_message.hpp"
-#include <fstream>
-#include <cstdlib>
-
 using boost::asio::ip::tcp;
 
 typedef std::deque<chat_message> chat_message_queue;
-
-boost::asio::io_context io_context;
-
-    const std::string kADDRESS("54.237.158.244");
-    const std::string kPORT("49145");
-    tcp::resolver resolver(io_context);
-    auto endpoints = resolver.resolve(kADDRESS.c_str(), kPORT.c_str());
-    chat_client c(io_context, endpoints);
-
-    boost::posix_time::seconds interval(1);
-    boost::asio::deadline_timer timer(io_context, interval);
-
-
-
 
 class chat_client
 {
@@ -143,9 +110,22 @@ private:
   chat_message_queue write_msgs_;
 };
 
+int main()
+{
+  try
+  {
+    boost::asio::io_context io_context;
 
-void tick(const boost::system::error_code /*e*/) {
-  std::ifstream i("init_client_to_server.json");
+    const std::string kADDRESS("54.237.158.244");
+    const std::string kPORT("49145");
+    tcp::resolver resolver(io_context);
+    auto endpoints = resolver.resolve(kADDRESS.c_str(), kPORT.c_str());
+    chat_client c(io_context, endpoints);
+
+    std::thread t([&io_context](){ io_context.run(); });
+    
+
+    std::ifstream i("init_client_to_server.json");
     std::string str;
     std::string file_contents;
     while (std::getline(i, str))
@@ -164,33 +144,19 @@ void tick(const boost::system::error_code /*e*/) {
     msg.body_length(std::strlen(line));
     std::memcpy(msg.body(), line, msg.body_length());
     msg.encode_header();
-    c.write(msg);
+    // c.write(msg);
 
-    timer.expires_from_now(interval);
-
-    timer.async_wait(tick);
-}
-
-int main()
-{
-  try
-  {
-
-    timer.async_wait(tick);
-
-    std::thread t([&io_context](){ io_context.run(); });
+    for(int i = 0; i < 1000; ++i) {
     
-
-    
-
-    
-
 
       // boost::asio::steady_timer timer(io_context, boost::asio::chrono::seconds(5));
       // timer.async_wait([&c, &msg](boost::system::error_code /*ec*/){
       //   c.write(msg);
       // });
 
+      c.write(msg);
+      sleep(1);
+    }
 
     sleep(5);
 
