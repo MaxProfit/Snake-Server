@@ -88,7 +88,7 @@ private:
     std::cout << "trying to read!" << std::endl;
     // const boost::asio::mutable_buffer recv_buff;
     std::vector<uint8_t> return_vec;
-    auto r = std::ref(return_vec)
+    auto r = std::ref(return_vec);
     std::cout << "uhhh" << std::endl;
     boost::asio::async_read(socket_, boost::asio::buffer(return_vec), [this, self, r](std::error_code ec, std::size_t /*length*/) {
       std::cout << "Hey im here" << std::endl;
