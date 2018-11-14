@@ -88,7 +88,7 @@ private:
     std::cout << "trying to read!" << std::endl;
     boost::asio::mutable_buffer buf;
     std::cout << "uhhh" << std::endl;
-    boost::asio::async_read(socket_, buf, [this, self, buf](std::error_code ec, std::size_t /*length*/) {
+    boost::asio::async_read(socket_, buf, [this, self, std::ref(buf)](std::error_code ec, std::size_t /*length*/) {
       std::cout << "Hey im here" << std::endl;
       if (!ec) {
         std::cout << "Okay lets try something." << std::endl;
