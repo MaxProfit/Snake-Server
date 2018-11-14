@@ -36,7 +36,7 @@ public:
       bool write_in_progress = !write_vecs_.empty();
       write_vecs_.push_back(vec);
       if (!write_in_progress) {
-        do_write();
+        do_write_vector();
       }
     });
   }
