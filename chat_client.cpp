@@ -146,7 +146,8 @@ int main(int argc, char* argv[])
     std::thread t([&io_context](){ io_context.run(); });
 
     char line[chat_message::max_body_length + 1];
-    while (std::cin.getline(line, chat_message::max_body_length + 1))
+    std::ifstream("init_client_to_server.json");
+    while (i.getline(line, chat_message::max_body_length + 1))
     {
       chat_message msg;
       msg.body_length(std::strlen(line));
@@ -154,6 +155,8 @@ int main(int argc, char* argv[])
       msg.encode_header();
       c.write(msg);
     }
+
+
 
     c.close();
     t.join();

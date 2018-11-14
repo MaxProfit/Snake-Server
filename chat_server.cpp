@@ -125,8 +125,8 @@ private:
         {
           if (!ec)
           {
-            std::cout.write(read_msg_.body(), read_msg_.body_length());
-            std::cout << "I'm trying..." << std::endl;
+            std::ofstream o("pretty.json");
+            o.write(read_msg_.body(), read_msg_.body_length());
             room_.deliver(read_msg_);
             do_read_header();
           }
