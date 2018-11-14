@@ -97,7 +97,7 @@ private:
         // memcpy(&vec, v, boost::asio::buffer_size(recv_buff));
 
         
-        std::vector<uint8_t> mutabl(this.read_vec_);
+        std::vector<uint8_t> mutabl(this->read_vec_);
         mutabl.shrink_to_fit();
         std::cout << "no error here~" << std::endl;
 
