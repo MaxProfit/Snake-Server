@@ -15,6 +15,7 @@
 #include <memory>
 #include <set>
 #include <utility>
+#include <vector>
 #include <boost/asio.hpp>
 #include "json.hpp"
 
@@ -92,8 +93,8 @@ private:
       if (!ec) {
         std::cout << "Okay lets try something." << std::endl;
 
-        const vector<uint8_t> *v = boost::asio::buffer_cast<const vector<uint8_t>*>(buf);
-        vector<uint8_t> vec;
+        const std::vector<uint8_t> *v = boost::asio::buffer_cast<const vector<uint8_t>*>(buf);
+        std::vector<uint8_t> vec;
         memcpy(&vec, v, boost::asio::buffer_size(buf));
 
         
