@@ -21,6 +21,20 @@ using boost::asio::ip::tcp;
 
 typedef std::deque<chat_message> chat_message_queue;
 
+boost::asio::io_context io_context;
+
+    const std::string kADDRESS("54.237.158.244");
+    const std::string kPORT("49145");
+    tcp::resolver resolver(io_context);
+    auto endpoints = resolver.resolve(kADDRESS.c_str(), kPORT.c_str());
+    chat_client c(io_context, endpoints);
+
+    boost::posix_time::seconds interval(1);
+    boost::asio::deadline_timer timer(io_context, interval);
+
+
+
+
 class chat_client
 {
 public:
@@ -129,22 +143,9 @@ private:
   chat_message_queue write_msgs_;
 };
 
-int main()
-{
-  try
-  {
-    boost::asio::io_context io_context;
 
-    const std::string kADDRESS("54.237.158.244");
-    const std::string kPORT("49145");
-    tcp::resolver resolver(io_context);
-    auto endpoints = resolver.resolve(kADDRESS.c_str(), kPORT.c_str());
-    chat_client c(io_context, endpoints);
-
-    std::thread t([&io_context](){ io_context.run(); });
-    
-
-    std::ifstream i("init_client_to_server.json");
+void tick(const boost::system::error_code /*e*/) {
+  std::ifstream i("init_client_to_server.json");
     std::string str;
     std::string file_contents;
     while (std::getline(i, str))
@@ -163,16 +164,35 @@ int main()
     msg.body_length(std::strlen(line));
     std::memcpy(msg.body(), line, msg.body_length());
     msg.encode_header();
-    // c.write(msg);
+    c.write(msg);
 
-    while(true) {
+    timer.expires_from_now(interval);
+
+    timer.async_wait(tick);
+}
+
+int main()
+{
+  try
+  {
+
+    timer.async_wait(tick);
+
+    std::thread t([&io_context](){ io_context.run(); });
+    
+
+    
+
+    
 
 
-      boost::asio::steady_timer timer(io_context, boost::asio::chrono::seconds(5));
-      timer.async_wait([&c, &msg](boost::system::error_code /*ec*/){
-        c.write(msg);
-      });
-    }
+      // boost::asio::steady_timer timer(io_context, boost::asio::chrono::seconds(5));
+      // timer.async_wait([&c, &msg](boost::system::error_code /*ec*/){
+      //   c.write(msg);
+      // });
+
+
+    sleep(5);
 
     c.close();
     t.join();

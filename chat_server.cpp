@@ -203,6 +203,7 @@ private:
 
 //----------------------------------------------------------------------
 
+// Read from it each time the thing gets updated, but write to it only every 100ms
 int main()
 {
   try {
