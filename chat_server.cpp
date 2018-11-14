@@ -87,18 +87,17 @@ private:
     auto self(shared_from_this());
     std::cout << "trying to read!" << std::endl;
     std::cout << "uhhh" << std::endl;
-    boost::asio::async_read(socket_, boost::asio::buffer(read_vec_, sizeof(uint8_t) * 50), [this, self](std::error_code ec, std::size_t /*length*/) {
+    boost::asio::async_read(socket_, boost::asio::buffer(read_vec_), [this, self, data](std::error_code ec, std::size_t /*length*/) {
       std::cout << "Hey im here" << std::endl;
       if (!ec) {
         std::cout << "Okay lets try something." << std::endl;
-        std::cout << read_vec_[5] << std::endl;
 
         // const std::vector<uint8_t> *v = boost::asio::buffer_cast<const std::vector<uint8_t>*>(std::ref(recv_buff));
         // std::vector<uint8_t> vec;
         // memcpy(&vec, v, boost::asio::buffer_size(recv_buff));
 
         
-        std::vector<uint8_t> mutabl(read_vec_);
+        std::vector<uint8_t> mutabl(this.read_vec_);
         mutabl.shrink_to_fit();
         std::cout << "no error here~" << std::endl;
 

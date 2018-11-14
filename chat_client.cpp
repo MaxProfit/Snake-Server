@@ -15,6 +15,7 @@
 #include <boost/asio.hpp>
 #include <vector>
 #include "json.hpp"
+#include <cstdlib>
 
 using boost::asio::ip::tcp;
 using nlohmann::json;
@@ -107,13 +108,8 @@ int main() {
     client.write(v_cbor);
 
     std::cout << v_cbor.size() << std::endl;
-    for (auto x : v_cbor) {
-      std::cout << x;
-    }
 
-    while (1!=2) {
-      
-    }
+    sleep(2000);
 
     client.close();
     thread.join();
