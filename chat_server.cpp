@@ -15,7 +15,6 @@
 #include <memory>
 #include <set>
 #include <utility>
-#include <vector>
 #include <boost/asio.hpp>
 #include "json.hpp"
 
@@ -86,33 +85,28 @@ private:
   void do_read_json() {
     auto self(shared_from_this());
     std::cout << "trying to read!" << std::endl;
+    std::vector<uint8_t> json_reads (50);
     std::cout << "uhhh" << std::endl;
-    boost::asio::async_read(socket_, boost::asio::buffer(read_vec_), [this, self](std::error_code ec, std::size_t /*length*/) {
-      std::cout << "Hey im here" << std::endl;
-      if (!ec) {
-        std::cout << "Okay lets try something." << std::endl;
-
-        // const std::vector<uint8_t> *v = boost::asio::buffer_cast<const std::vector<uint8_t>*>(std::ref(recv_buff));
-        // std::vector<uint8_t> vec;
-        // memcpy(&vec, v, boost::asio::buffer_size(recv_buff));
-
-        
-        std::vector<uint8_t> mutabl(this->read_vec_);
-        mutabl.shrink_to_fit();
+    boost::system::error_code ec;
+    boost::asio::read(socket_, boost::asio::buffer(json_reads), ec);
+    if (!ec) {
+       json_reads.resize(22);
         std::cout << "no error here~" << std::endl;
-
-
-        // room_.deliver(buf);
+        // room_.deliver(json_reads);
         std::cout << "We got here!!" << std::endl;
-        json j_from_cbor = json::from_cbor(mutabl);
+        json j_from_cbor = json::from_cbor(json_reads);
         std::cout << j_from_cbor["pi"] << std::endl;
         // do read header? 
         // do something with the jsonreads
-      } else {
-        std::cout << "at the else statement" << std::endl;
-        room_.leave(shared_from_this());
-      }
-    });
+
+    } else {
+      std::cout << "at the else statement" << std::endl;
+      room_.leave(shared_from_this());
+    }
+       
+
+
+        
   }
 
   void do_write() {

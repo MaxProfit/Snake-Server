@@ -15,7 +15,6 @@
 #include <boost/asio.hpp>
 #include <vector>
 #include "json.hpp"
-#include <cstdlib>
 
 using boost::asio::ip::tcp;
 using nlohmann::json;
@@ -101,6 +100,15 @@ int main() {
 
     std::thread thread([&io_context](){ io_context.run(); });
 
+    // char line[chat_message::max_body_length + 1];
+    // while (std::cin.getline(line, chat_message::max_body_length + 1)) {
+    //   chat_message msg;
+    //   msg.body_length(std::strlen(line));
+    //   std::memcpy(msg.body(), line, msg.body_length());
+    //   msg.encode_header();
+    //   client.write(msg);
+    // }
+
     json j;
 	  j["pi"] = 3.1415;
 	  j["list"] = {1,2,3};
@@ -108,8 +116,13 @@ int main() {
     client.write(v_cbor);
 
     std::cout << v_cbor.size() << std::endl;
+    for (auto x : v_cbor) {
+      std::cout  << x;
+    }
 
-    sleep(2000);
+    while (1!=2) {
+      
+    }
 
     client.close();
     thread.join();
