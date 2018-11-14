@@ -17,6 +17,7 @@
 #include "json.hpp"
 #include <cstdlib>
 
+// For ease of use
 using boost::asio::ip::tcp;
 using nlohmann::json;
 
@@ -40,46 +41,46 @@ public:
     });
   }
 
+  // When you close the client in the main, shut down the sockets
   void close() {
-    boost::asio::post(io_context_, [this]() { 
-      socket_.close(); });
+    boost::asio::post(io_context_, [this]() { socket_.close(); });
   }
 
 private:
   void do_connect(const tcp::resolver::results_type& endpoints) {
     boost::asio::async_connect(socket_, endpoints, [this](std::error_code ec, tcp::endpoint) {
       if (!ec) {
-        do_read_json();
+        // On connection to server, what it does
+        do_read_vector();
       }
     });
   }
 
-  void do_read_json() {
-    std::vector<uint8_t> json_reads (50);
-    boost::asio::async_read(socket_, boost::asio::buffer(json_reads), [this, json_reads](std::error_code ec, std::size_t /*length*/) {
-      if (!ec) {
-        // do something with the jsonreads
-        std::cout << "no error here~" << std::endl;
-        std::cout << "We got here!!" << std::endl;
-        json j_from_cbor = json::from_cbor(json_reads);
-        std::cout << j_from_cbor["pi"] << std::endl;
-      } else {
-        socket_.close();
-      }
-    });
+  void do_read_vector() {
+    // Simply reads into the buffer
+    boost::system::error_code ec;
+    boost::asio::read(socket_, boost::asio::buffer(read_vec_), ec);
+    if (!ec) {
+      std::cout << read_vec_.at(0) << std::endl;
+      json j_from_cbor = json::from_cbor(read_vec_);
+      std::cout <<  j_from_cbor["pi"] << std::endl;
+    } else {
+      socket_.close();
+    }
   }
 
-  void do_write() {
-    boost::asio::async_write(socket_, boost::asio::buffer(write_vecs_.front()), [this](std::error_code ec, std::size_t /*length*/) {
-      if (!ec) {
-        write_vecs_.pop_front();
-        if (!write_vecs_.empty()) {
-          do_write();
-        }
-      } else {
-        socket_.close();
+  void do_write_vector() {
+    boost::system::error_code ec;
+    boost::asio::write(socket_, boost::asio::buffer(write_vecs_.front()), ec);
+    if (!ec) {
+      // This keeps going until the write queue is empty
+      write_vecs_.pop_front();
+      if (!write_vecs_.empty()) {
+        do_write_vector();
       }
-    });
+    } else {
+      socket_.close();
+    }
   }
 
 private:

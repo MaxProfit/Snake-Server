@@ -82,41 +82,31 @@ public:
 
 private:
 
-  void do_read_json() {
+  void do_read_vector() {
     auto self(shared_from_this());
-    std::cout << "trying to read!" << std::endl;
-    std::vector<uint8_t> json_reads (50);
-    std::cout << "uhhh" << std::endl;
     boost::system::error_code ec;
-    boost::asio::read(socket_, boost::asio::buffer(json_reads), ec);
+    boost::asio::read(socket_, boost::asio::buffer(read_vec_), ec);
     if (!ec) {
-       json_reads.resize(22);
-        std::cout << "no error here~" << std::endl;
-        // room_.deliver(json_reads);
-        std::cout << "We got here!!" << std::endl;
-        json j_from_cbor = json::from_cbor(json_reads);
-        std::cout << j_from_cbor["pi"] << std::endl;
-        // do read header? 
-        // do something with the jsonreads
-
+      room_.deliver(read_vec_);
+      json j_from_cbor = json::from_cbor(read_vec_);
+      std::cout << j_from_cbor["pi"] << std::endl;
     } else {
-      std::cout << "at the else statement" << std::endl;
       room_.leave(shared_from_this());
     }
   }
 
-  void do_write() {
+  void do_write_vector() {
     auto self(shared_from_this());
-    boost::asio::async_write(socket_, boost::asio::buffer(write_vecs_.front()), [this, self](std::error_code ec, std::size_t /*length*/) {
-      if (!ec) {
-        write_vecs_.pop_front();
-        if (!write_vecs_.empty()) {
-          do_write();
-        }
-      } else {
-        room_.leave(shared_from_this());
+    boost::system::error_code ec;
+    boost::asio::write(socket_, boost::asio::buffer(write_vecs_.front()), ec);
+    if (!ec) {
+      write_vecs_.pop_front();
+      if (!write_vecs_.empty()) {
+        do_write_vector();
       }
-    });
+    } else {
+      room_.leave(shared_from_this());
+    }
   }
 
   tcp::socket socket_;
