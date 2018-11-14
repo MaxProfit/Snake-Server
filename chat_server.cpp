@@ -91,6 +91,7 @@ private:
       std::cout << "Hey im here" << std::endl;
       if (!ec) {
         std::vector<uint8_t> readable(json_reads);
+        std::cout << json_reads[1] << std::endl;
         readable.shrink_to_fit();
         std::cout << "no error here~" << std::endl;
         room_.deliver(json_reads);
