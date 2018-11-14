@@ -2,7 +2,7 @@
 // chat_server.cpp
 // ~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2018 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2017 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -15,144 +15,180 @@
 #include <memory>
 #include <set>
 #include <utility>
-#include <vector>
 #include <boost/asio.hpp>
-#include "json.hpp"
+#include "chat_message.hpp"
 
-using nlohmann::json;
 using boost::asio::ip::tcp;
 
 //----------------------------------------------------------------------
 
-typedef std::vector<uint8_t> cbor_vec;
-typedef std::deque<cbor_vec> cbor_vec_queue;
+typedef std::deque<chat_message> chat_message_queue;
 
 //----------------------------------------------------------------------
 
-class chat_participant {
+class chat_participant
+{
 public:
   virtual ~chat_participant() {}
-  virtual void deliver(const cbor_vec& vec) = 0;
+  virtual void deliver(const chat_message& msg) = 0;
 };
 
-// Keeps track of the participants on the server
 typedef std::shared_ptr<chat_participant> chat_participant_ptr;
 
 //----------------------------------------------------------------------
 
-class chat_room {
+class chat_room
+{
 public:
-  void join(chat_participant_ptr participant) {
+  void join(chat_participant_ptr participant)
+  {
     participants_.insert(participant);
+    for (auto msg: recent_msgs_)
+      participant->deliver(msg);
   }
 
-  void leave(chat_participant_ptr participant) {
+  void leave(chat_participant_ptr participant)
+  {
     participants_.erase(participant);
   }
 
-  void deliver(const cbor_vec& vec) {
-    for (auto participant: participants_) {
-      participant->deliver(vec);
-    }
+  void deliver(const chat_message& msg)
+  {
+    recent_msgs_.push_back(msg);
+    while (recent_msgs_.size() > max_recent_msgs)
+      recent_msgs_.pop_front();
+
+    for (auto participant: participants_)
+      participant->deliver(msg);
   }
 
 private:
   std::set<chat_participant_ptr> participants_;
+  enum { max_recent_msgs = 100 };
+  chat_message_queue recent_msgs_;
 };
 
 //----------------------------------------------------------------------
 
-class chat_session : public chat_participant, public std::enable_shared_from_this<chat_session> {
+class chat_session
+  : public chat_participant,
+    public std::enable_shared_from_this<chat_session>
+{
 public:
-  chat_session(tcp::socket socket, chat_room& room) : socket_(std::move(socket)), room_(room) {}
-
-  void start() {
-    // I should probably have the quick communication here
-    room_.join(shared_from_this());
-    // do_read_header();
-    do_read_json();
+  chat_session(tcp::socket socket, chat_room& room)
+    : socket_(std::move(socket)),
+      room_(room)
+  {
   }
 
-  void deliver(const cbor_vec& vec) {
-    bool write_in_progress = !write_vecs_.empty();
-    write_vecs_.push_back(vec);
-    if (!write_in_progress) {
+  void start()
+  {
+    room_.join(shared_from_this());
+    do_read_header();
+  }
+
+  void deliver(const chat_message& msg)
+  {
+    bool write_in_progress = !write_msgs_.empty();
+    write_msgs_.push_back(msg);
+    if (!write_in_progress)
+    {
       do_write();
     }
   }
 
 private:
-
-  void do_read_json() {
+  void do_read_header()
+  {
     auto self(shared_from_this());
-    std::cout << "trying to read!" << std::endl;
-    std::cout << "uhhh" << std::endl;
-    boost::asio::async_read(socket_, boost::asio::buffer(read_vec_), [this, self](std::error_code ec, std::size_t /*length*/) {
-      std::cout << "Hey im here" << std::endl;
-      if (!ec) {
-        std::cout << "Okay lets try something." << std::endl;
-
-        // const std::vector<uint8_t> *v = boost::asio::buffer_cast<const std::vector<uint8_t>*>(std::ref(recv_buff));
-        // std::vector<uint8_t> vec;
-        // memcpy(&vec, v, boost::asio::buffer_size(recv_buff));
-
-        
-        std::vector<uint8_t> mutabl(this->read_vec_);
-        mutabl.shrink_to_fit();
-        std::cout << "no error here~" << std::endl;
-
-
-        // room_.deliver(buf);
-        std::cout << "We got here!!" << std::endl;
-        json j_from_cbor = json::from_cbor(mutabl);
-        std::cout << j_from_cbor["pi"] << std::endl;
-        // do read header? 
-        // do something with the jsonreads
-      } else {
-        std::cout << "at the else statement" << std::endl;
-        room_.leave(shared_from_this());
-      }
-    });
+    boost::asio::async_read(socket_,
+        boost::asio::buffer(read_msg_.data(), chat_message::header_length),
+        [this, self](boost::system::error_code ec, std::size_t /*length*/)
+        {
+          if (!ec && read_msg_.decode_header())
+          {
+            do_read_body();
+          }
+          else
+          {
+            room_.leave(shared_from_this());
+          }
+        });
   }
 
-  void do_write() {
+  void do_read_body()
+  {
     auto self(shared_from_this());
-    boost::asio::async_write(socket_, boost::asio::buffer(write_vecs_.front()), [this, self](std::error_code ec, std::size_t /*length*/) {
-      if (!ec) {
-        write_vecs_.pop_front();
-        if (!write_vecs_.empty()) {
-          do_write();
-        }
-      } else {
-        room_.leave(shared_from_this());
-      }
-    });
+    boost::asio::async_read(socket_,
+        boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
+        [this, self](boost::system::error_code ec, std::size_t /*length*/)
+        {
+          if (!ec)
+          {
+            room_.deliver(read_msg_);
+            do_read_header();
+          }
+          else
+          {
+            room_.leave(shared_from_this());
+          }
+        });
+  }
+
+  void do_write()
+  {
+    auto self(shared_from_this());
+    boost::asio::async_write(socket_,
+        boost::asio::buffer(write_msgs_.front().data(),
+          write_msgs_.front().length()),
+        [this, self](boost::system::error_code ec, std::size_t /*length*/)
+        {
+          if (!ec)
+          {
+            write_msgs_.pop_front();
+            if (!write_msgs_.empty())
+            {
+              do_write();
+            }
+          }
+          else
+          {
+            room_.leave(shared_from_this());
+          }
+        });
   }
 
   tcp::socket socket_;
   chat_room& room_;
-  cbor_vec read_vec_;
-  cbor_vec_queue write_vecs_;
-
+  chat_message read_msg_;
+  chat_message_queue write_msgs_;
 };
 
 //----------------------------------------------------------------------
 
-class chat_server {
+class chat_server
+{
 public:
-  chat_server(boost::asio::io_context& io_context, const tcp::endpoint& endpoint) : acceptor_(io_context, endpoint) {
+  chat_server(boost::asio::io_context& io_context,
+      const tcp::endpoint& endpoint)
+    : acceptor_(io_context, endpoint)
+  {
     do_accept();
   }
 
 private:
-  void do_accept() {
-    acceptor_.async_accept([this](std::error_code ec, tcp::socket socket) {
-      if (!ec) {
-        std::make_shared<chat_session>(std::move(socket), room_)->start();
-      }
+  void do_accept()
+  {
+    acceptor_.async_accept(
+        [this](boost::system::error_code ec, tcp::socket socket)
+        {
+          if (!ec)
+          {
+            std::make_shared<chat_session>(std::move(socket), room_)->start();
+          }
 
-      do_accept();
-    });
+          do_accept();
+        });
   }
 
   tcp::acceptor acceptor_;
@@ -161,19 +197,29 @@ private:
 
 //----------------------------------------------------------------------
 
-int main() {
-  try {
+int main(int argc, char* argv[])
+{
+  try
+  {
+    if (argc < 2)
+    {
+      std::cerr << "Usage: chat_server <port> [<port> ...]\n";
+      return 1;
+    }
+
     boost::asio::io_context io_context;
 
-    std::cout << "at main" << std::endl;
-
-    const unsigned short kPORT {49145};
-    tcp::endpoint endpoint(tcp::v4(), kPORT);
-    chat_server server(io_context, endpoint);
+    std::list<chat_server> servers;
+    for (int i = 1; i < argc; ++i)
+    {
+      tcp::endpoint endpoint(tcp::v4(), std::atoi(argv[i]));
+      servers.emplace_back(io_context, endpoint);
+    }
 
     io_context.run();
-
-  } catch (std::exception& e) {
+  }
+  catch (std::exception& e)
+  {
     std::cerr << "Exception: " << e.what() << "\n";
   }
 
