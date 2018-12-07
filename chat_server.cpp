@@ -169,7 +169,7 @@ int main() {
     chat_server server(io_context, endpoint);
 
     // Creates a new thread so we can do other computations while this runs
-    // std::thread thread([&io_context](){ io_context.run(); });
+    std::thread thread([&io_context](){ io_context.run(); });
 
     // The code will continue to run forever because the server always waiting
     // for more connections, it will not stop until the program is exited
