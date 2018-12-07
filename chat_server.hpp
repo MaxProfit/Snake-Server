@@ -12,8 +12,6 @@
 
 typedef std::deque<chat_message> chat_message_queue;
 
-// I EVENTUALLY NEED TO PUT A MUTEX LOCK ON READING AND WRITING FILES
-
 class chat_participant {
   public:
     virtual ~chat_participant();
@@ -30,8 +28,8 @@ class chat_room {
     
   private:
     std::set<chat_participant_ptr> participants_;
-    enum { max_recent_msgs = 100 };
-    chat_message_queue recent_msgs_;
+    // enum { max_recent_msgs = 100 };
+    // chat_message_queue recent_msgs_;
 };
 
 class chat_session : public chat_participant, public std::enable_shared_from_this<chat_session> {
