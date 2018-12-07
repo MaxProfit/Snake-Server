@@ -56,23 +56,24 @@ json file for simple configuration.
 
 1. November 9th
     - [x] Get a server on a port then connect with another process
-    - [ ] Get two computers to communicate together
-    - [ ] Parse JSON and output the key:value pair to ensure that it works
-    - [ ] Write unit tests testing the network, most likely testing localhost
-    - [ ] Write a data format for world data, storing snakes and food locations
-    - [ ] Write a data format for configuration, one for client, one for server
-    - [ ] Learn about syncronous vs asyncronous servers and their benefits
-    - [ ] Host the server code on an AWS instance
+   
 2. November 16th
+    - [x] Get two computers to communicate together
+    - [x] Parse JSON and output the key:value pair to ensure that it works    
+    - [x] Write a data format for world data, storing snakes and food locations
+    - [x] Write a data format for configuration, one for client, one for server
+    - [x] Host the server code on an AWS instance
+3. November 23rd
+    - [ ] Ensure the tickrate of the server is suitable for the game engine
+    - [ ] Write unit tests testing the network, most likely testing localhost
+    - [ ] Create an interface to write and read data from the game engine to net
+4. November 30th
     - [ ] Get two snakes in the same game together
     - [ ] Make the snakes conform to the new rules of slitherio
-3. November 23rd
+5. December 7th
     - [ ] Make the game go beyond the boundaries of the window
     - [ ] Make a minimap for the game
-4. November 30th
-    - [ ] Clean up the graphics and make some new snake skins
+6. December 14th
+     - [ ] Clean up the graphics and make some new snake skins
     - [ ] Have the leaderboard be able to store names associated with score
     - [ ] Figure out how to unit test something as complex as this
-5. December 7th
-
-6. December 14th
