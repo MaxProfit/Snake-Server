@@ -29,7 +29,6 @@ void chat_room::deliver(const chat_message& msg) {
   }
 }
 
-#warning TODO: NEEDS TESTING
 std::vector<nlohmann::json> chat_room::get_json_vector() {
   std::vector<json> json_vec = json_recieved_vec_;
   // Make sure we don't read the same data twice
@@ -80,11 +79,9 @@ void chat_session::do_read_body() {
       boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
       [this, self](boost::system::error_code ec, std::size_t /*length*/) {
         if (!ec) {
-          #warning TODO: TEST THIS
           // Parses the string into json, then adds it to the vector
           std::string std_string(read_msg_.body());
           room_.add_to_json_vec(json::parse(std_string));
-
 
           std::cout << "I received something!!" << std::endl;
           std::cout.write(read_msg_.body(), read_msg_.body_length());
@@ -173,16 +170,12 @@ int main() {
     // Creates a new thread so we can do other computations while this runs
     std::thread thread([&io_context](){ io_context.run(); });
 
+    // The code will continue to run forever because the server always waiting
+    // for more connections, it will not stop until the program is exited
+    sleep(5);
 
-    // sleep(5);
+    server.send_json(json::parse("{ \"happy\": true, \"pi\": 3.141 }"));
 
-    // for (json j : server.get_json_vector()) {
-    //   std::cout << j.dump() << std::endl;
-    // }
-
-
-    // sleep(5);
-    std::cout << thread.joinable() << std::endl;
     thread.join();
   }
   catch (std::exception& e)
