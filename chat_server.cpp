@@ -174,7 +174,7 @@ int main() {
     // for more connections, it will not stop until the program is exited
     sleep(5);
 
-    server.send_json(json::parse("{ \"happy\": true, \"pi\": 3.141 }"));
+    server.send_json(json::parse("{ \"happy\": nah, \"pi\": 3 }"));
 
     thread.join();
   }
