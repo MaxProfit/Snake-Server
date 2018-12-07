@@ -24,6 +24,8 @@ void chat_room::leave(chat_participant_ptr participant) {
 }
 
 void chat_room::deliver(const chat_message& msg) {
+  std::cout << "trying to send message" << std::endl;
+  std::cout << msg.body() << std::endl;
   for (auto participant: participants_) {
     participant->deliver(msg);
   }
