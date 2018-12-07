@@ -174,16 +174,15 @@ int main() {
     std::thread thread([&io_context](){ io_context.run(); });
 
 
-    // Waits 50 seconds to exit the program
-    sleep(5);
+    // sleep(5);
 
-    for (json j : server.get_json_vector()) {
-      std::cout << j.dump() << std::endl;
-    }
+    // for (json j : server.get_json_vector()) {
+    //   std::cout << j.dump() << std::endl;
+    // }
 
 
-    sleep(5);
-
+    // sleep(5);
+    std::cout << thread.joinable() << std::endl;
     thread.join();
   }
   catch (std::exception& e)
