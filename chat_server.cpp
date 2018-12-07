@@ -7,8 +7,6 @@ using nlohmann::json;
 //----------------------------------------------------------------------
 
 
-
-
   chat_participant::~chat_participant() {}
 
 
