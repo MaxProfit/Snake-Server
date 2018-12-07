@@ -16,6 +16,7 @@ chat_participant::~chat_participant() {}
 void chat_room::join(chat_participant_ptr participant) {
   participants_.insert(participant);
   // Send the init messages to the client, giving them a place or whatever
+  // Send the current gameboard state
 
 }
 
@@ -178,7 +179,6 @@ int main() {
 
     // The code will continue to run forever because the server always waiting
     // for more connections, it will not stop until the program is exited
-    io_context.run();
     sleep(2);
 
     server.send_json(json::parse("{ \"happy\": nah, \"pi\": 3 }"));
