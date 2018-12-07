@@ -32,7 +32,9 @@ class chat_room {
     // chat_message_queue recent_msgs_;
 };
 
-class chat_session : public chat_participant, public std::enable_shared_from_this<chat_session> {
+class chat_session :    public chat_participant, 
+                        public std::enable_shared_from_this<chat_session> {
+
   public:
     chat_session(boost::asio::ip::tcp::socket socket, chat_room& room);
     void start();
@@ -51,7 +53,8 @@ class chat_session : public chat_participant, public std::enable_shared_from_thi
 
 class chat_server {
   public:
-    chat_server(boost::asio::io_context& io_context, const boost::asio::ip::tcp::endpoint& endpoint);
+    chat_server(boost::asio::io_context& io_context, 
+                const boost::asio::ip::tcp::endpoint& endpoint);
 
   private:
     void do_accept();

@@ -31,7 +31,8 @@ void chat_room::deliver(const chat_message& msg) {
 
 //------------------------------------------------------------------------------
 
-chat_session::chat_session(tcp::socket socket, chat_room& room) : socket_(std::move(socket)), room_(room) {}
+chat_session::chat_session(tcp::socket socket, chat_room& room) 
+  : socket_(std::move(socket)), room_(room) {}
 
 void chat_session::start() {
   room_.join(shared_from_this());
@@ -95,12 +96,15 @@ void chat_session::do_write() {
 
 //----------------------------------------------------------------------
 
-chat_server::chat_server(boost::asio::io_context& io_context, const tcp::endpoint& endpoint) : acceptor_(io_context, endpoint) {
+chat_server::chat_server( boost::asio::io_context& io_context, 
+                          const tcp::endpoint& endpoint) 
+                          : acceptor_(io_context, endpoint) {
   do_accept();
 }
 
 void chat_server::do_accept() {
-  acceptor_.async_accept([this](boost::system::error_code ec, tcp::socket socket) {
+  acceptor_.async_accept([this](boost::system::error_code ec,
+                                tcp::socket socket) {
     if (!ec) {
       std::make_shared<chat_session>(std::move(socket), room_)->start();
     }
@@ -111,7 +115,7 @@ void chat_server::do_accept() {
 
 //----------------------------------------------------------------------
 
-// Read from it each time the thing gets updated, but write to it only every 100ms
+// Read from it each time the thing gets updated, but write to it only 100ms
 int main() {
   try {
   
