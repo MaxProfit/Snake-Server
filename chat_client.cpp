@@ -122,39 +122,13 @@ int main() {
     chat_client c(io_context, endpoints);
 
     std::thread t([&io_context](){ io_context.run(); });
-    
-
-    // std::ifstream i("init_client_to_server.json");
-    // std::string str;
-    // std::string file_contents;
-    // while (std::getline(i, str))
-    // {
-    //   file_contents += str;
-    //   file_contents.push_back('\n');
-    // }
-
-    // char line[chat_message::max_body_length + 1];
-
-    // // Code below from https://goo.gl/q2j48z
-    // strncpy(line, file_contents.c_str(), sizeof(line));
-    // line[sizeof(line) - 1] = 0;
-
-    // chat_message msg;
-    // msg.body_length(std::strlen(line));
-    // std::memcpy(msg.body(), line, msg.body_length());
-    // msg.encode_header();
-    // // c.write(msg);
-
-    // for(int i = 0; i < 1000; ++i) {
-    
-    //   c.write(msg);
-    //   sleep(1);
-    // }
-
+  
     auto j3 = json::parse("{ \"happy\": true, \"pi\": 3.141 }");
     c.send_json(j3);
 
     sleep(5);
+
+    std::cout << c.get_recent_json().dump() << std::endl;
 
     c.close();
     t.join();

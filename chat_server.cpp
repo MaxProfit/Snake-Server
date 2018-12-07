@@ -164,6 +164,9 @@ int main() {
   try {
 
     boost::asio::io_context io_context;
+
+    // This work object keeps the thread 
+    // alive and not quitting on us prematurely
     boost::asio::io_context::work work(io_context);
 
     const uint16_t kPORT {49145};
