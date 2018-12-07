@@ -182,7 +182,7 @@ int main() {
     }
 
 
-    sleep(50);
+    sleep(5);
 
     thread.join();
   }
