@@ -12,6 +12,32 @@ chat_client::chat_client(boost::asio::io_context& io_context,
       do_connect(endpoints);
 }
 
+void chat_client::close() {
+  boost::asio::post(io_context_, [this]() { socket_.close(); });
+}
+
+json chat_client::get_recent_json() {
+  return json_recieved_from_server_;
+}
+
+void chat_client::send_json(json json_to_send) {
+  std::string string_to_send = convert_from_json(json_to_send);
+  
+  char line[chat_message::max_body_length + 1];
+
+  // Code below from https://goo.gl/q2j48z
+  // Copying a cstring with the json contents into a char array for sending
+  strncpy(line, string_to_send.c_str(), sizeof(line));
+  line[sizeof(line) - 1] = 0;
+
+  // Encode the message and then send it
+  chat_message msg;
+  msg.body_length(std::strlen(line));
+  std::memcpy(msg.body(), line, msg.body_length());
+  msg.encode_header();
+  write(msg);
+}
+
 void chat_client::write(const chat_message& msg) {
   boost::asio::post(io_context_, [this, msg]() {
     bool write_in_progress = !write_msgs_.empty();
@@ -20,10 +46,6 @@ void chat_client::write(const chat_message& msg) {
         do_write();
     }
   });
-}
-
-void chat_client::close() {
-  boost::asio::post(io_context_, [this]() { socket_.close(); });
 }
 
 void chat_client::do_connect(const tcp::resolver::results_type& endpoints) {
@@ -52,8 +74,9 @@ void chat_client::do_read_body() {
       boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
       [this](boost::system::error_code ec, std::size_t /*length*/) {
         if (!ec) {
-          std::cout.write(read_msg_.body(), read_msg_.body_length());
-          std::cout << "\n";
+          // std::cout.write(read_msg_.body(), read_msg_.body_length());
+          // std::cout << "\n";
+          json_recieved_from_server_ = convert_to_json(read_msg_.body());
           do_read_header();
         } else {
           socket_.close();
@@ -77,6 +100,17 @@ void chat_client::do_write() {
       });
 }
 
+json chat_client::convert_to_json(const char* const to_become_json) {
+  // Parses the string into json
+  std::string std_string(to_become_json);
+  return json::parse(std_string);
+}
+
+std::string chat_client::convert_from_json(json to_become_string) {
+  // Dumps the serialized json to string
+  return to_become_string.dump();
+}
+
 int main() {
   try {
     boost::asio::io_context io_context;
@@ -90,32 +124,35 @@ int main() {
     std::thread t([&io_context](){ io_context.run(); });
     
 
-    std::ifstream i("init_client_to_server.json");
-    std::string str;
-    std::string file_contents;
-    while (std::getline(i, str))
-    {
-      file_contents += str;
-      file_contents.push_back('\n');
-    }
+    // std::ifstream i("init_client_to_server.json");
+    // std::string str;
+    // std::string file_contents;
+    // while (std::getline(i, str))
+    // {
+    //   file_contents += str;
+    //   file_contents.push_back('\n');
+    // }
 
-    char line[chat_message::max_body_length + 1];
+    // char line[chat_message::max_body_length + 1];
 
-    // Code below from https://goo.gl/q2j48z
-    strncpy(line, file_contents.c_str(), sizeof(line));
-    line[sizeof(line) - 1] = 0;
+    // // Code below from https://goo.gl/q2j48z
+    // strncpy(line, file_contents.c_str(), sizeof(line));
+    // line[sizeof(line) - 1] = 0;
 
-    chat_message msg;
-    msg.body_length(std::strlen(line));
-    std::memcpy(msg.body(), line, msg.body_length());
-    msg.encode_header();
-    // c.write(msg);
+    // chat_message msg;
+    // msg.body_length(std::strlen(line));
+    // std::memcpy(msg.body(), line, msg.body_length());
+    // msg.encode_header();
+    // // c.write(msg);
 
-    for(int i = 0; i < 1000; ++i) {
+    // for(int i = 0; i < 1000; ++i) {
     
-      c.write(msg);
-      sleep(1);
-    }
+    //   c.write(msg);
+    //   sleep(1);
+    // }
+
+    auto j3 = json::parse("{ \"happy\": true, \"pi\": 3.141 }");
+    c.send_json(j3);
 
     sleep(5);
 
