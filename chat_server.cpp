@@ -179,7 +179,7 @@ int main() {
 
     // The code will continue to run forever because the server always waiting
     // for more connections, it will not stop until the program is exited
-    sleep(2);
+    sleep(4);
 
     server.send_json(json::parse("{ \"happy\": nah, \"pi\": 3 }"));
 
