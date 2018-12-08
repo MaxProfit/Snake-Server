@@ -183,11 +183,15 @@ int main() {
 
     server.send_json(json::parse("{ \"happy\": nah, \"pi\": 3 }"));
     
-    std::cout << thread.joinable() << std::endl;
+    // std::cout << thread.joinable() << std::endl;
     // thread.join();
-  }
-  catch (std::exception& e)
-  {
+
+    if (thread.joinable()) {
+      thread.join();
+    } else {
+      thread.detach();
+    }
+  } catch (std::exception& e) {
     std::cerr << "Exception: " << e.what() << "\n";
   }
 
