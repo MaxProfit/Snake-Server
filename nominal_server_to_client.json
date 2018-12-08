@@ -1,0 +1,34 @@
+{
+    "game": {
+      "food": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "snake": [
+        {
+          "id": 4355435,
+          "status": "alive",
+          "direction": "right",
+          "coordinates": [
+            [3,2],
+            [3,2]
+            ]
+        },
+        {
+          "id": 2354354,
+          "status": "dead",
+          "direction": "dead"
+        }
+      ]
+    }
+  }

@@ -85,6 +85,8 @@ void chat_session::do_read_body() {
           // Parses the string into json, then adds it to the vector
           std::string std_string(read_msg_.body());
           room_.add_to_json_vec(json::parse(std_string));
+          // TODO: make a std::pair with the json obj, pointer number to verify
+          // the id of the person sending the information
 
           std::cout << "I received something!!" << std::endl;
           std::cout.write(read_msg_.body(), read_msg_.body_length());
@@ -160,7 +162,6 @@ void chat_server::do_accept() {
 
 //----------------------------------------------------------------------
 
-// Read from it each time the thing gets updated, but write to it only 100ms
 int main() {
   try {
 
@@ -182,15 +183,8 @@ int main() {
     sleep(4);
 
     server.send_json(json::parse("{ \"happy\": nah, \"pi\": 3 }"));
-    
-    // std::cout << thread.joinable() << std::endl;
-    // thread.join();
 
-    if (thread.joinable()) {
-      thread.join();
-    } else {
-      thread.detach();
-    }
+    thread.join();
   } catch (std::exception& e) {
     std::cerr << "Exception: " << e.what() << "\n";
   }
