@@ -41,6 +41,14 @@ respect to the client logic. This logic includes ensuring the game client is
 able to connect to the server and is able to properly represent the gameboard
 and make alterations to the snakes.
 
+The client tests by default will use the AWS server that I have configured to
+act as the other agent that is being tested. This means that the only way that
+the tests will work is if you start the server tests first and then start the
+client tests after. This way it tests both the recieving and sending of the json
+packets from both the client and the server, which should both respond "Both
+tests passed!!" after both of the tests (the sending and the recieving pass) on
+both ends.
+
 ## Deployment
 
 If you for some reason want to make your own server for this game, the server
