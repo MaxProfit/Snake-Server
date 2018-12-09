@@ -5,9 +5,9 @@
 #include <memory>
 #include <set>
 #include <utility>
+#include <fstream>
 #include <boost/asio.hpp>
 #include "../../include/chat_message.hpp"
-#include <fstream>
 #include "../../lib/json.hpp"
 
 typedef std::deque<chat_message> chat_message_queue;
@@ -27,6 +27,9 @@ class chat_room {
     
     // This connects to every player in the game and delivers a message to them
     void deliver(const chat_message& msg);
+
+    // Sends the json
+    void send_json(nlohmann::json json_to_send);
 
     std::vector<nlohmann::json> get_json_vector();
 
@@ -69,6 +72,7 @@ class chat_server {
 
     // Sends a json object to all the participants in the game
     // by calling the chat room's deliver method
+    // Sends it to the room object for packaging
     void send_json(nlohmann::json json_to_send);
 
   private:
