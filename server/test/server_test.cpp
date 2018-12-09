@@ -25,6 +25,8 @@ int main() {
 
         server.send_json(json::parse("{ \"happy\": nah, \"pi\": 3 }"));
 
+        sleep(4);
+
         thread.join();
 
     } catch (std::exception& e) {

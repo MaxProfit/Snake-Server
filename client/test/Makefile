@@ -20,4 +20,4 @@ CXXFLAGS = -std=c++14 -Wall -Wextra -Werror -pedantic
 LDFLAGS = -std=c++14 -lpthread -lboost_system
 
 test :
-		$(CXX) $(CXXFLAGS) client_test.cpp ../src/chat_client.cpp -o client_test $(LDFLAGS)
+		$(CXX) $(CXXFLAGS) client_test.cpp ../src/chat_client.cpp -o client_test.out $(LDFLAGS)
