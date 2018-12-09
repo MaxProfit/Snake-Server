@@ -25,6 +25,8 @@ int main() {
 
         server.send_json(json::parse("{ \"happy\": nah, \"pi\": 3 }"));
 
+        std::cout << server.get_json_vector().at(0).dump() << std::endl;
+
         sleep(4);
 
         thread.join();
