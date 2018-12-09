@@ -35,6 +35,7 @@ void chat_client::send_json(json json_to_send) {
   msg.body_length(std::strlen(line));
   std::memcpy(msg.body(), line, msg.body_length());
   msg.encode_header();
+  // Writing the message...
   write(msg);
 }
 
@@ -81,6 +82,7 @@ void chat_client::do_read_body() {
     [this](boost::system::error_code ec, std::size_t /*length*/) {
       if (!ec) {
         // COUT RECIEVED
+        std::cout << "I recieved something!!" << std::endl;
         json_recieved_from_server_ = convert_to_json(read_msg_.body());
         do_read_header();
       } else {
@@ -96,6 +98,7 @@ void chat_client::do_write() {
     boost::asio::buffer(write_msgs_.front().data(),
     write_msgs_.front().length()),
     [this](boost::system::error_code ec, std::size_t /*length*/) {
+      std::cout << "trying to write something!!" << std::endl;
       if (!ec) {
         write_msgs_.pop_front();
         if (!write_msgs_.empty()) {
