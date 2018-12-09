@@ -3,14 +3,15 @@
 using boost::asio::ip::tcp;
 using nlohmann::json;
 
+// Code below derived from https://goo.gl/xuDdLC
+
 //----------------------------------------------------------------------
+// Chat Participant
 
 chat_participant::~chat_participant() {}
 
 //----------------------------------------------------------------------
 // Chat Room
-
-// Code below derived from https://goo.gl/xuDdLC
 
 void chat_room::join(chat_participant_ptr participant) {
   participants_.insert(participant);
@@ -23,8 +24,6 @@ void chat_room::leave(chat_participant_ptr participant) {
 }
 
 void chat_room::deliver(const chat_message& msg) {
-  std::cout << "trying to send message" << std::endl;
-  std::cout << msg.body() << std::endl;
   for (auto participant: participants_) {
     participant->deliver(msg);
   }
@@ -43,7 +42,6 @@ void chat_room::add_to_json_vec(nlohmann::json json_to_add) {
 
 //------------------------------------------------------------------------------
 // Chat Session
-
 
 chat_session::chat_session(tcp::socket socket, chat_room& room) 
   : socket_(std::move(socket)), room_(room) {}
@@ -88,11 +86,8 @@ void chat_session::do_read_body() {
         room_.add_to_json_vec(json::parse(std_string));
         // TODO: make a std::pair with the json obj, pointer number to verify
         // the id of the person sending the information
-
-        std::cout << "I received something!!" << std::endl;
-        std::cout.write(read_msg_.body(), read_msg_.body_length());
-        std::cout << std::endl;
-        room_.deliver(read_msg_);
+      
+        // room_.deliver(read_msg_);
         do_read_header();
       } else {
         room_.leave(shared_from_this());

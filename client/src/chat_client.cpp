@@ -80,8 +80,6 @@ void chat_client::do_read_body() {
     boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
     [this](boost::system::error_code ec, std::size_t /*length*/) {
       if (!ec) {
-        // std::cout.write(read_msg_.body(), read_msg_.body_length());
-        // std::cout << "\n";
         json_recieved_from_server_ = convert_to_json(read_msg_.body());
         do_read_header();
       } else {
