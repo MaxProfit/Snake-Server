@@ -42,8 +42,10 @@ int main() {
     tcp::resolver resolver(io_context);
     auto endpoints = resolver.resolve(kADDRESS.c_str(), kPORT.c_str());
     chat_client c(io_context, endpoints);
+    std::cout << "In main... created client!" << std::endl;
 
     std::thread t([&io_context](){ io_context.run(); });
+    std::cout << "thread is running io context in main" << std::endl;
   
     auto j3 = json::parse("{ \"happy\": true, \"pi\": 3.141 }");
     c.send_json(j3);
