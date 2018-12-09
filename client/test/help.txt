@@ -1,1 +1,0 @@
-clang++ -std=c++14 client_test.cpp ../src/chat_client.cpp -o client_test -lpthread -lboost_system
