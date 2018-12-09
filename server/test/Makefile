@@ -18,7 +18,7 @@ CXXFLAGS = -std=c++11 -Wall -Wextra -Werror -pedantic
 # The first two are the same as the compiler flags.
 # -l<something> tells the linker to go look in the system for pre-installed object files to link with.
 # Here we want to link with the object files from libpng (since we use it in our code) and libc++. Remember libc++ is the standard library implementation.
-LDFLAGS = -lpthread -lboost_system
+LDFLAGS = -lboost_system -lpthread 
 
 test :
 		$(CXX) $(CXXFLAGS) server_test.cpp ../src/chat_server.cpp -o server_test.out $(LDFLAGS)
