@@ -41,8 +41,8 @@ class chat_room {
     std::vector<nlohmann::json> json_recieved_vec_;
 };
 
-class chat_session :    public chat_participant, 
-                        public std::enable_shared_from_this<chat_session> {
+class chat_session :  public chat_participant, 
+                      public std::enable_shared_from_this<chat_session> {
 
   public:
     chat_session(boost::asio::ip::tcp::socket socket, chat_room& room);

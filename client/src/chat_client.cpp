@@ -55,6 +55,7 @@ void chat_client::do_connect(const tcp::resolver::results_type& endpoints) {
     endpoints,
     [this](boost::system::error_code ec, tcp::endpoint) {
       if (!ec) {
+        std::cout << "Successfully connected... reading header!" << std::endl;
         do_read_header();
       }
     }

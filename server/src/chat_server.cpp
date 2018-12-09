@@ -35,6 +35,8 @@ void chat_room::deliver(const chat_message& msg) {
 }
 
 void chat_room::send_json(json json_to_send) {
+  std::cout << "In chat_room::send_json" << std::endl;
+
   // Convert to a message format and execute
   std::string json_serialize_string = json_to_send.dump();
 
@@ -165,6 +167,7 @@ void chat_server::do_accept() {
   acceptor_.async_accept([this](
     boost::system::error_code ec, 
     tcp::socket socket) {
+      std::cout << "In chat_server::do_accept()... Connecting to client" << std::endl;
       if (!ec) {
         std::make_shared<chat_session>(std::move(socket), room_)->start();
       }

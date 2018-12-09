@@ -51,17 +51,19 @@ int main() {
     const uint16_t kPORT {49145};
     tcp::endpoint endpoint(tcp::v4(), kPORT);
     chat_server server(io_context, endpoint);
+    std::cout << "In main... server created" << std::endl;
 
     // Creates a new thread so we can do other computations while this runs
-    // std::thread thread([&io_context](){ io_context.run(); });
+    std::thread thread([&io_context](){ io_context.run(); });
 
-    io_context.run();
 
     // The code will continue to run forever because the server always waiting
     // for more connections, it will not stop until the program is exited
     sleep(4);
 
     server.send_json(json::parse("{ \"happy\": nah, \"pi\": 3 }"));
+
+    sleep(4);
 
     thread.join();
   } catch (std::exception& e) {
