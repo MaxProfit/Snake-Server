@@ -13,6 +13,7 @@ int main() {
         tcp::resolver resolver(io_context);
         auto endpoints = resolver.resolve(kADDRESS.c_str(), kPORT.c_str());
         chat_client c(io_context, endpoints);
+
         std::thread t([&io_context](){ io_context.run(); });
   
         auto j3 = json::parse("{ \"happy\": true, \"pi\": 3.141 }");

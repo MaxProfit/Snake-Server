@@ -2,8 +2,8 @@
 #include <deque>
 #include <iostream>
 #include <thread>
-#include <boost/asio.hpp>
 #include <fstream>
+#include <boost/asio.hpp>
 #include "../../include/chat_message.hpp"
 #include "../../lib/json.hpp"
 

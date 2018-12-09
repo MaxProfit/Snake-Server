@@ -1,0 +1,1 @@
+clang++ -std=c++14 server_test.cpp ../src/chat_server.cpp -o server_test -lpthread -lboost_system
