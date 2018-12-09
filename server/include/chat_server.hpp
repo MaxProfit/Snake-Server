@@ -6,9 +6,9 @@
 #include <set>
 #include <utility>
 #include <boost/asio.hpp>
-#include "chat_message.hpp"
+#include "../../include/chat_message.hpp"
 #include <fstream>
-#include "json.hpp"
+#include "../../lib/json.hpp"
 
 typedef std::deque<chat_message> chat_message_queue;
 

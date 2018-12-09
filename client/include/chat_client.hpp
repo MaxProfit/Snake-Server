@@ -4,8 +4,8 @@
 #include <thread>
 #include <boost/asio.hpp>
 #include <fstream>
-#include "chat_message.hpp"
-#include "json.hpp"
+#include "../../include/chat_message.hpp"
+#include "../../lib/json.hpp"
 
 typedef std::deque<chat_message> chat_message_queue;
 
