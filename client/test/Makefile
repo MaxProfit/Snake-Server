@@ -11,13 +11,13 @@ LD = clang++
 # -g specifies that we want to include "debugging symbols" which allows us to use a debugging program.
 # -O0 specifies to do no optimizations on our code.
 # -Wall, -Wextra, and -pedantic tells the compiler to look out for common problems with our code. -Werror makes it so that these warnings stop compilation.
-CXXFLAGS = -std=c++14 -Wall -Wextra -Werror -pedantic 
+CXXFLAGS = -std=c++11 -Wall -Wextra -Werror -pedantic 
 
 # These are the options we pass to the linker.
 # The first two are the same as the compiler flags.
 # -l<something> tells the linker to go look in the system for pre-installed object files to link with.
 # Here we want to link with the object files from libpng (since we use it in our code) and libc++. Remember libc++ is the standard library implementation. 
-LDFLAGS = -std=c++14 -lpthread -lboost_system
+LDFLAGS = -std=c++11 -lpthread -lboost_system
 
 test :
 		$(CXX) $(CXXFLAGS) client_test.cpp ../src/chat_client.cpp -o client_test.out $(LDFLAGS)
