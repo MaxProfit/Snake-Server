@@ -28,6 +28,9 @@ class chat_room {
     // This connects to every player in the game and delivers a message to them
     void deliver(const chat_message& msg);
 
+    // Sends the json
+    void send_json(nlohmann::json json_to_send);
+
     std::vector<nlohmann::json> get_json_vector();
 
     // This needs to be called from the read functions
@@ -69,6 +72,7 @@ class chat_server {
 
     // Sends a json object to all the participants in the game
     // by calling the chat room's deliver method
+    // Sends it to the room object for packaging
     void send_json(nlohmann::json json_to_send);
 
   private:

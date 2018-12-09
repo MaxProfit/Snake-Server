@@ -17,6 +17,7 @@ void chat_room::join(chat_participant_ptr participant) {
   participants_.insert(participant);
   // Send the init messages to the client, giving them a place or whatever
   // Send the current gameboard state
+  send_json(json::parse("{ \"id\": 1, \"pi\": 3 }"));
 }
 
 void chat_room::leave(chat_participant_ptr participant) {
@@ -24,9 +25,30 @@ void chat_room::leave(chat_participant_ptr participant) {
 }
 
 void chat_room::deliver(const chat_message& msg) {
+  // TRY TO SEND MESSAGE HERE
   for (auto participant: participants_) {
     participant->deliver(msg);
   }
+}
+
+void chat_room::send_json(json json_to_send) {
+  // Convert to a message format and execute
+  std::string json_serialize_string = json_to_send.dump();
+
+  char line[chat_message::max_body_length + 1];
+
+  // Code below from https://goo.gl/q2j48z
+  // Copying a cstring with the json contents into a char array for sending
+  strncpy(line, json_serialize_string.c_str(), sizeof(line));
+  line[sizeof(line) - 1] = 0;
+
+  // Encode the message and then send it
+  chat_message msg;
+  msg.body_length(std::strlen(line));
+  std::memcpy(msg.body(), line, msg.body_length());
+  msg.encode_header();
+
+  deliver(msg);
 }
 
 std::vector<nlohmann::json> chat_room::get_json_vector() {
@@ -87,6 +109,8 @@ void chat_session::do_read_body() {
         // TODO: make a std::pair with the json obj, pointer number to verify
         // the id of the person sending the information
       
+        // I HAVE RECIEVED SOMETHING
+        // COUT WRITE
         // room_.deliver(read_msg_);
         do_read_header();
       } else {
@@ -129,24 +153,8 @@ std::vector<json> chat_server::get_json_vector() {
   return room_.get_json_vector();
 }
 
-void chat_server::send_json(json json_to_send) {
-  // Convert to a message format and execute
-  std::string json_serialize_string = json_to_send.dump();
-
-  char line[chat_message::max_body_length + 1];
-
-  // Code below from https://goo.gl/q2j48z
-  // Copying a cstring with the json contents into a char array for sending
-  strncpy(line, json_serialize_string.c_str(), sizeof(line));
-  line[sizeof(line) - 1] = 0;
-
-  // Encode the message and then send it
-  chat_message msg;
-  msg.body_length(std::strlen(line));
-  std::memcpy(msg.body(), line, msg.body_length());
-  msg.encode_header();
-
-  room_.deliver(msg);
+void chat_server::send_json(json json_to_send {
+  room_.send_json(json_to_send);
 }
 
 void chat_server::do_accept() {
