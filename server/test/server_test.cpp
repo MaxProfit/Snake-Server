@@ -29,7 +29,8 @@ int main() {
 
         sleep(4);
 
-        thread.join();
+        // thread.join();
+        thread.detach();
 
     } catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
