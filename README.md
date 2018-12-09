@@ -1,6 +1,3 @@
-# FinalProject
-Final Project
-
 # Final Project: Snake.io
 ## :snake: Slither.io + Snake :snake:
 
