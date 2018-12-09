@@ -153,7 +153,7 @@ std::vector<json> chat_server::get_json_vector() {
   return room_.get_json_vector();
 }
 
-void chat_server::send_json(json json_to_send {
+void chat_server::send_json(json json_to_send) {
   room_.send_json(json_to_send);
 }
 
