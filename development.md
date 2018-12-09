@@ -38,5 +38,7 @@
 ### Completed for week 5
 ##### December 7
 
+Got the networking working perfectly. Able to now encapsulate within the game loop on client side and a timer on the server side, without the connection closing and threads working such that we can send messages and recieve them at the same time while dealing with the server loop. 
+
 ### Completed for week 6
 ##### December 14
