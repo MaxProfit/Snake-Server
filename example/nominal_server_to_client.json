@@ -1,38 +1,33 @@
 {
-      "food": [
-        [
-          0,
-          1
-        ],
-        [
-          2,
-          3
-        ],
-        [
-          4,
-          5
-        ]
-      ],
-      "snake": [
-        {
-          "id": 4355435,
-          "length": 12,
-          "status": "alive",
-          "direction": "right",
-          "coordinates": [
-            [3,2],
-            [3,2]
-            ]
-        },
-        {
-          "id": 2354354,
-          "length": 12,
-          "status": "dead",
-          "direction": "right",
-          "coordinates": [
-            [2,3],
-            [4,2]
-          ]
-        }
+  "snakes": [
+    {
+     "id": 5,
+     "length": 7,
+     "alive": true,
+     "direction": "RIGHT",
+     "color": [0,100,0],
+     "location": [
+        [3,5],
+        [4,5],
+        [5,5]
       ]
-  }
+    },
+    {
+      "id": 54,
+      "length": 9,
+      "alive": true,
+      "direction": "UP",
+      "color": [100,0,0],
+      "location": [
+        [2,3],
+        [2,3],
+        [3,2]
+      ]
+    }
+  ],
+  "food": [
+    [0,2],
+    [2,3],
+    [3,2]
+  ]
+}
