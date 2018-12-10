@@ -1,8 +1,10 @@
 #include <utility>
 #include <random>
 
-
 namespace snakegame {
+  
+  const int kWidth {48};
+  const int kHeight {27};
 
 class Food {
 
