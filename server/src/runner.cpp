@@ -1,3 +1,25 @@
+#include "../../include/json.hpp"
+#include <iostream>
+#include <fstream>
+
+using nlohmann::json;
+
+json receive_json() {
+    // Open the file and read into memory
+    json json_holder;
+    std::ifstream file_input("/Users/matthew/Documents/Xcode/finalproject-MaxProfit/interchange/to_server.json");
+    // Feed in the scoresheet to the json object
+    file_input >> json_holder;
+    
+    return json_holder;
+}
+
+void send_json(json json_to_send) {
+    std::ofstream file_output("/Users/matthew/Documents/Xcode/finalproject-MaxProfit/interchange/to_client.json");
+    // Pushes the json to the file with a width of
+    file_output << std::setw(2) << json_holder << std::endl;
+}
+
 int main() {
     // Init server
 
