@@ -21,7 +21,7 @@ int main() {
        std::cerr << e.what() << std::endl;
    }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 100000; ++i) {
       io_context.poll();
       // server.send_json(json::parse("{ \"happy\": false, \"pi\": 3 }"));
       server.send_json(json_holder);
