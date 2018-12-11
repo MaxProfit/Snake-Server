@@ -1,4 +1,5 @@
 #include "../include/chat_server.hpp"
+#include <chrono>
 
 using nlohmann::json;
 using boost::asio::ip::tcp;
@@ -24,7 +25,10 @@ int main() {
       io_context.poll();
       // server.send_json(json::parse("{ \"happy\": false, \"pi\": 3 }"));
       server.send_json(json_holder);
-      sleep(1);
+      
+      // Sleep this thread
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
       std::vector<json> json_vec = server.get_json_vector();
       for (json j : json_vec) {
         std::cout << j.dump() << std::endl;

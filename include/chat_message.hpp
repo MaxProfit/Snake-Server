@@ -17,8 +17,8 @@
 
 class chat_message {
 public:
-  enum { header_length = 16 };
-  enum { max_body_length = 1024 };
+  enum { header_length = 20 };
+  enum { max_body_length = 2048 };
 
   chat_message() : body_length_(0) {}
 

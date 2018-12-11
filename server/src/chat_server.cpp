@@ -103,6 +103,8 @@ void chat_session::do_read_body() {
       if (!ec) {
         // Parses the string into json, then adds it to the vector
         std::string std_string(read_msg_.body());
+
+        std::cout << std_string << std::endl;
         room_.add_to_json_vec(json::parse(std_string));
         // TODO: make a std::pair with the json obj, pointer number to verify
         // the id of the person sending the information

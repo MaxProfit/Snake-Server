@@ -7,6 +7,7 @@
 #include <utility>
 #include <fstream>
 #include <boost/asio.hpp>
+#include <mutex>
 #include "../../include/chat_message.hpp"
 #include "../../lib/json.hpp"
 
