@@ -17,8 +17,6 @@ void chat_room::join(chat_participant_ptr participant) {
   participants_.insert(participant);
   // Send the init messages to the client, giving them a place or whatever
   // Send the current gameboard state
-  std::cout << "currently sending from the init function" << std::endl;
-  send_json(json::parse("{ \"id\": 1, \"pi\": 3 }"));
 }
 
 void chat_room::leave(chat_participant_ptr participant) {
@@ -26,17 +24,12 @@ void chat_room::leave(chat_participant_ptr participant) {
 }
 
 void chat_room::deliver(const chat_message& msg) {
-  // TRY TO SEND MESSAGE HERE
-  std::cout << "calling the deliver to all participants!!" << std::endl;
-
   for (auto participant: participants_) {
     participant->deliver(msg);
   }
 }
 
 void chat_room::send_json(json json_to_send) {
-  std::cout << "In chat_room::send_json" << std::endl;
-
   // Convert to a message format and execute
   std::string json_serialize_string = json_to_send.dump();
 
@@ -113,11 +106,6 @@ void chat_session::do_read_body() {
         room_.add_to_json_vec(json::parse(std_string));
         // TODO: make a std::pair with the json obj, pointer number to verify
         // the id of the person sending the information
-      
-        // I HAVE RECIEVED SOMETHING
-        std::cout << "I have recieved something..." << std::endl;
-        // COUT WRITE
-        // room_.deliver(read_msg_);
         do_read_header();
       } else {
         room_.leave(shared_from_this());
@@ -167,7 +155,6 @@ void chat_server::do_accept() {
   acceptor_.async_accept([this](
     boost::system::error_code ec, 
     tcp::socket socket) {
-      std::cout << "In chat_server::do_accept()... Connecting to client" << std::endl;
       if (!ec) {
         std::make_shared<chat_session>(std::move(socket), room_)->start();
       }

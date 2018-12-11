@@ -9,10 +9,12 @@ chat_client::chat_client(
   boost::asio::io_context& io_context, 
   const tcp::resolver::results_type& endpoints) 
     : io_context_(io_context), socket_(io_context) {
+      // Connect to the server endpoints
       do_connect(endpoints);
 }
 
 void chat_client::close() {
+  // Close the connection with the server
   boost::asio::post(io_context_, [this](){ socket_.close(); });
 }
 
@@ -55,7 +57,6 @@ void chat_client::do_connect(const tcp::resolver::results_type& endpoints) {
     endpoints,
     [this](boost::system::error_code ec, tcp::endpoint) {
       if (!ec) {
-        std::cout << "Successfully connected... reading header!" << std::endl;
         do_read_header();
       }
     }
@@ -82,8 +83,6 @@ void chat_client::do_read_body() {
     boost::asio::buffer(read_msg_.body(), read_msg_.body_length()),
     [this](boost::system::error_code ec, std::size_t /*length*/) {
       if (!ec) {
-        // COUT RECIEVED
-        std::cout << "I recieved something!!" << std::endl;
         json_recieved_from_server_ = convert_to_json(read_msg_.body());
         do_read_header();
       } else {
@@ -99,7 +98,6 @@ void chat_client::do_write() {
     boost::asio::buffer(write_msgs_.front().data(),
     write_msgs_.front().length()),
     [this](boost::system::error_code ec, std::size_t /*length*/) {
-      std::cout << "trying to write something!!" << std::endl;
       if (!ec) {
         write_msgs_.pop_front();
         if (!write_msgs_.empty()) {
