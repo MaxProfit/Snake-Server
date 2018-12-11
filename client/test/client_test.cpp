@@ -37,7 +37,8 @@ int main() {
   try {
     boost::asio::io_context io_context;
 
-    const std::string kADDRESS("54.237.158.244");
+    // const std::string kADDRESS("54.237.158.244");
+    const std::string kADDRESS("127.0.0.1");
     const std::string kPORT("49145");
     tcp::resolver resolver(io_context);
     auto endpoints = resolver.resolve(kADDRESS.c_str(), kPORT.c_str());
