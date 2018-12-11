@@ -3,7 +3,7 @@
     {
      "id": 5,
      "length": 7,
-     "alive": false,
+     "alive": true,
      "direction": "RIGHT",
      "color": [0,100,0],
      "location": [
