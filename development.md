@@ -32,13 +32,32 @@
 ### Completed for week 3
 ##### November 23
 
+Canceled the amazon instance for now to start developing locally because it's
+easier for about every mean. Debugged the network io_context such that it is now
+able to do polling which allows the server to not only deal with sending and 
+receiving of the JSON but also the the server logic at the same time which is
+actually a huge issue for this problem. The real time aspect of this project is 
+the hardest. Because there really is no waiting to make sure the socket is closed
+or that we don't have garbage data because at that point it is already too late.
+
 ### Completed for week 4
 ##### November 30
+
+Took week off to study calc
 
 ### Completed for week 5
 ##### December 7
 
-Got the networking working perfectly. Able to now encapsulate within the game loop on client side and a timer on the server side, without the connection closing and threads working such that we can send messages and recieve them at the same time while dealing with the server loop. 
+Got the networking working perfectly. Able to now encapsulate within the game 
+loop on client side and a timer on the server side, without the connection 
+closing and threads working such that we can send messages and recieve them at 
+the same time while dealing with the server loop. 
 
 ### Completed for week 6
 ##### December 14
+
+Got the game actually created with everything generated and the JSON being able 
+to be passed through the network to actually service each individual client.
+Created many optimizations but didn't have time to look into the syncronization 
+of network sockets which I didn't think was going to be this big of a problem in
+the final solution. 

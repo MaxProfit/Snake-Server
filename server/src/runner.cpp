@@ -1,71 +1,53 @@
-#include "../../include/json.hpp"
+#include "../../lib/json.hpp"
+#include "../include/board.hpp"
+#include "../include/chat_server.hpp"
+#include <boost/asio.hpp>
 #include <iostream>
-#include <fstream>
 
 using nlohmann::json;
-
-json receive_json() {
-    // Open the file and read into memory
-    json json_holder;
-    std::ifstream file_input("/Users/matthew/Documents/Xcode/finalproject-MaxProfit/interchange/to_server.json");
-    // Feed in the scoresheet to the json object
-    file_input >> json_holder;
-    
-    return json_holder;
-}
-
-void send_json(json json_to_send) {
-    std::ofstream file_output("/Users/matthew/Documents/Xcode/finalproject-MaxProfit/interchange/to_client.json");
-    // Pushes the json to the file with a width of
-    file_output << std::setw(2) << json_holder << std::endl;
-}
+using boost::asio::ip::tcp;
 
 int main() {
-    // Init server
+    try {
 
-    // Create food map
+        // Creates a board
+        snakegameboard::Board board;
 
-    // Ready to recieve snakes
+        boost::asio::io_context io_context;
 
-    // Game loop
+        // Initializes the server
+        const uint16_t kPORT {49145};
+        tcp::endpoint endpoint(tcp::v4(), kPORT);
+        chat_server server(io_context, endpoint);
 
-    while (1) {
-        // Get the latest info on the snakes
+        std::chrono::duration<double> elapsed{};
 
-        // run through the game loop
-        // Check every snake to see if they changed direction
-        // Check if they're dead, if they reset their game
+        for (int i = 0; i < 100000; ++i) {
+            // Sleep this thread and try and keep the clients in sync with the JSON updates
+            std::chrono::milliseconds d = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+            std::this_thread::sleep_for(std::chrono::milliseconds(200) - d);
+            // Start a timer for determining how long the next sleep will be
+            auto start = std::chrono::high_resolution_clock::now();
 
-        // Check if the local snakes have eaten any food
-        
+            // Checks if the io_context has anything new for us to handle, and deals with it
+            io_context.poll();
 
-        // Run through all the snakes
-        // if we should update and
-        // if the snake isn't dead
+            // Sends the directions to their appropriate snakes
+            board.ConsumeJsonVec(server.get_json_vector());
 
-        for (snake : snakes_) {
-            if (should_update_ && current_state_ = IN_PROGRESS) {
+            // Updates the board logic
+            board.UpdateBoard();
 
-                if (snake_body_.intersects(food)) {
-                    // Eat the food
-                    // Make the food respawn
-                }
+            // Sends the new update out to the clients
+            json j = board.PackageBoard();
+            server.send_json(j);
 
-                game_snake.update(); // updates the snake one square in the current direction
-                
-                if (snake_body_.intersects(all snakes)) {
-                    current_state_ = FINISHED
-                }
-
-            } 
-
-            should_update_ = true;
+            auto finish = std::chrono::high_resolution_clock::now();
+            elapsed = finish - start;
         }
-
-
-        // MAKE THE JSON FILE THAT THE TIMER WILL PULL FROM
+    } catch (std::exception& e) {
+        std::cerr << "Exception: " << e.what() << "\n";
     }
 
-    // Create timer to update the game every 1/20th of a second, sending the
-    // new info to the clients
+    return 0;
 }

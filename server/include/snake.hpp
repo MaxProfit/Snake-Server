@@ -5,66 +5,89 @@
 #ifndef TEST_PROJECT_SNAKE_HPP
 #define TEST_PROJECT_SNAKE_HPP
 
-#include <utility>
-#include <vector>
-#include <deque>
-#include "Board.hpp"
-
+// Forward definition needed for compiler to not be angry
+namespace snakegameboard {
+    class Board;
+};
 
 namespace snakegame {
 
-    enum class SnakeDirection {
+    // Directions that the snake can be in
+    enum class Direction {
         UP,
         DOWN,
         LEFT,
         RIGHT
     };
 
+    // Forward declaration needed for the compiler
+    class Snake;
+
+    // Transforms the snake object into a json object by specifying which fields go where
+    void to_json(nlohmann::json& j, const snakegame::Snake& s);
+
     class Snake {
     public:
 
-        // Used to recreate the snake that just died or just connected with the ID
-        Snake(int id, snakegame::Board& board);
+        // Used to recreate the snake that just died or just connected with the ID, also generates a color
+        Snake(int id, snakegameboard::Board& board);
 
         // Checks if the Snake is beyond the boundaries of the board, then checks if the snake is hitting another snake
-        bool IsAlive();
+        bool IsAlive(std::pair<int, int> new_head_pos);
 
-        // Moves the snake one tile in the direction it's currently heading
+        // Moves the snake one tile in the direction it's currently pointed towards
         void Update();
 
-        // Increases the snake length by one, by adding onto the tail
-        void EatFood();
+        // Sets the direction of the snake, comes from the json, given in WASD because buffers are weird
+        void SetDirection(std::string new_dir);
+
+        // Returns the ID of the snake
+        int const GetID() const;
 
         // Get the length of the snake - 1, which is equal to the score.
-        int GetFoodEaten();
+        int const GetFoodEaten() const;
 
-        SnakeDirection GetDirection();
+        // Gets the alive_ field, which is used to give the JSON extraction the correct values
+        bool const GetAlive() const;
 
-        void SetDirection(std::string new_direction);
+        // Returns the current direction the snake is heading as a string
+        std::string const GetDirection() const;
 
-        std::deque<std::pair<int, int>> GetCoords() {
-            return coords_;
-        }
+        // Returns the RGB value of the snake's color
+        std::array<int, 3> const GetColor() const;
 
+        // Gets the vector of coordinates the snake is currently occupying
+        std::vector<std::pair<int, int>> const GetCoords() const;
 
     private:
+        // Used to generate the colors
+        std::mt19937 generator_;
+        std::uniform_int_distribution<> dist_color_;
 
-        // Current direction of the snake
-        SnakeDirection current_direction_ = SnakeDirection::RIGHT;
+        // The score
+        int score_;
+
+        // Current direction of the snake, starting off as right
+        Direction current_direction_ = Direction::RIGHT;
 
         // A deque to store the coordinates that the snake body resides at
-        std::deque<std::pair<int, int>> coords_;
+        std::vector<std::pair<int, int>> coords_;
 
         // The id we refer to this snake by, also links to the client
         int id_;
 
         // Board that we're able to connect to to get free spaces
-        snakegame::Board& board_;
+        snakegameboard::Board& board_;
 
         // Turns false after the user sends a command, until the next tick.
         bool should_update_ = true;
-    };
 
+        // Color array
+        std::array<int, 3> color_;
+
+        // Stores the alive
+        bool alive_ = true;
+    };
 }
 
 #endif //TEST_PROJECT_SNAKE_HPP
