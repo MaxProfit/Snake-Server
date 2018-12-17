@@ -7,6 +7,8 @@ running and reliable game engine, snake.io is made simple to setup, using common
 libraries. The game is a proof of concept for simple TCP game server that uses
 JSON to communicate between the server and the client.
 
+Here's a video of it in [action](https://youtu.be/6E1q_CocW2Q).
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your
