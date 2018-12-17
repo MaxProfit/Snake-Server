@@ -1,6 +1,3 @@
-#clang++ -std=c++14 server_test.cpp ../src/chat_server.cpp -o server_test -lpthread -lboost_system
-#clang++ -std=c++14 - client_test.cpp ../src/chat_client.cpp -o client_test -lpthread -lboost_system -lc++abi -std=c++14 -stdlib=libc++
-
 # This defines our compiler and linker, as we've seen before.
 CXX = clang++
 LD = clang++
